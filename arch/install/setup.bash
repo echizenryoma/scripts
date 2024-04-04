@@ -180,6 +180,10 @@ cat <<EOF >/mnt/etc/sysctl.d/70-bbr.conf
 net.core.default_qdisc=cake
 net.ipv4.tcp_congestion_control=bbr
 EOF
+
+if [[ $IS_HYPERV == "1" ]]; then
+    sed -i "s|^MODULES=(.*)|MODULES=(hv_storvsc hv_vmbus)|g" /mnt/etc/mkinitcpio.conf
+fi
 sed -i "s|PRESETS=(.*)|PRESETS=('default')|g" /mnt/etc/mkinitcpio.d/linux-lts.preset
 sed -i "s|^HOOKS=(.*)|HOOKS=(base systemd autodetect microcode modconf kms keyboard block filesystems fsck)|g" /mnt/etc/mkinitcpio.conf
 sed -i 's|#Color|Color|' /mnt/etc/pacman.conf
@@ -187,10 +191,6 @@ sed -i 's|#ParallelDownloads|ParallelDownloads|' /mnt/etc/pacman.conf
 sed -i 's|# include \"/usr/share/nano/\*\.nanorc\"|include "/usr/share/nano/*.nanorc"|' /mnt/etc/nanorc
 arch-chroot /mnt mkinitcpio -P
 rm /mnt/boot/initramfs-linux-lts-fallback.img
-
-if [[ $IS_HYPERV == "1" ]]; then
-    sed -i "s|^MODULES=(.*)|MODULES=(hv_storvsc hv_vmbus)|g" /mnt/etc/mkinitcpio.conf
-fi
 
 sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 console=tty0 console=ttyS0,115200 earlyprintk=ttyS0,115200 consoleblank=0"|g' /mnt/etc/default/grub
 echo 'GRUB_SERIAL_COMMAND="serial --speed=115200"' >>/mnt/etc/default/grub

@@ -151,9 +151,9 @@ EOF
 MACAddress=${IPV6_INTERFACE_MAC}
 
 [Link]
-Name=wan0
+Name=wan1
 EOF
-    gen_systemd_network_config "wan0" "${IS_DHCP}" "" "" "${IPV6_ADDRESS}" "${IPV6_GATEWAY}" >/mnt/etc/systemd/network/01-wan1.network
+    gen_systemd_network_config "wan1" "${IS_DHCP}" "" "" "${IPV6_ADDRESS}" "${IPV6_GATEWAY}" >/mnt/etc/systemd/network/01-wan1.network
 fi
 arch-chroot /mnt chown :systemd-network /etc/systemd/network/*
 arch-chroot /mnt systemctl enable systemd-networkd

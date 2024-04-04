@@ -92,8 +92,8 @@ echo "UEFI: ${IS_UEFI}"
 ROOT_DEV=$(get_mount_fs /)
 mount ${ROOT_DEV} /mnt
 
-read -p "Enable DHCP?(Y/N): " IS_DHCP
-read -p "Is Hyper-V?(Y/N): " IS_HYPERV
+read -p "Enable DHCP?(1/NULL): " IS_DHCP
+read -p "Is Hyper-V?(1/NULL): " IS_HYPERV
 
 if [[ $IS_UEFI == "1" ]]; then
     EFI_DEV=$(get_mount_fs /boot/efi)

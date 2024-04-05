@@ -72,7 +72,7 @@ IPV4_GATEWAY=$(get_default_ipv4_gateway)
 IPV6_ADDRESS=$(get_default_ipv6)
 IPV6_GATEWAY=$(get_default_ipv6_gateway)
 
-source /tmp//tmp/5c44cf21-1004-4f76-8ee6-aec3f527aa0a/.env
+source /install/.env
 echo "IS_UEFI: ${IS_UEFI}"
 echo "EFI_DEV: ${EFI_DEV}"
 echo "LOC: ${LOC}"

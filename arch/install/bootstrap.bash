@@ -50,5 +50,5 @@ IS_DHCP=${IS_DHCP}
 IS_HYPERV=${IS_HYPERV}
 EOF
 curl -Ls "https://github.com/echizenryoma/scripts/raw/main/arch/install/setup.bash" -o /install/root.x86_64/install/setup.bash
-chmod +x /install/root.x86_64/tmp/5c44cf21-1004-4f76-8ee6-aec3f527aa0a/setup.bash
+chmod +x /install/root.x86_64/install/setup.bash
 /install/root.x86_64/bin/arch-chroot /install/root.x86_64/ /install/setup.bash

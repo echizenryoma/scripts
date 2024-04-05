@@ -63,29 +63,35 @@ gen_systemd_network_config() {
     echo -e $config
 }
 
-is_uefi() {
-    if [ -d "/sys/firmware/efi" ]; then
-        echo "1"
-    fi
-}
+IPV4_INTERFACE=$(get_ipv4_default_if)
+IPV6_INTERFACE=$(get_ipv6_default_if)
+IPV4_INTERFACE_MAC=$(get_if_mac ${IPV4_INTERFACE})
+IPV6_INTERFACE_MAC=$(get_if_mac ${IPV6_INTERFACE})
+IPV4_ADDRESS=$(get_default_ipv4)
+IPV4_GATEWAY=$(get_default_ipv4_gateway)
+IPV6_ADDRESS=$(get_default_ipv6)
+IPV6_GATEWAY=$(get_default_ipv6_gateway)
 
-get_mount_fs() {
-    local root=$1
-    df ${root} | sed '1d' | awk '{print $1}'
-}
+source /tmp//tmp/5c44cf21-1004-4f76-8ee6-aec3f527aa0a/.env
+echo "IS_UEFI: ${IS_UEFI}"
+echo "EFI_DEV: ${EFI_DEV}"
+echo "LOC: ${LOC}"
+echo "IS_DHCP: ${IS_DHCP}"
+echo "IS_HYPERV: ${IS_HYPERV}"
 
-IS_UEFI=$(is_uefi)
-echo "UEFI: ${IS_UEFI}"
+echo "IPV4_INTERFACE: ${IPV4_INTERFACE}"
+echo "IPV6_INTERFACE: ${IPV6_INTERFACE}"
+echo "IPV4_INTERFACE_MAC=${IPV4_INTERFACE_MAC}"
+echo "IPV6_INTERFACE_MAC=${IPV6_INTERFACE_MAC}"
+echo "IPV4_ADDRESS=${IPV4_ADDRESS}"
+echo "IPV4_GATEWAY=${IPV4_GATEWAY}"
+echo "IPV6_ADDRESS=${IPV6_ADDRESS}"
+echo "IPV6_GATEWAY=${IPV6_GATEWAY}"
 
-ROOT_DEV=$(get_mount_fs /)
+read -p "contine?" IS_CONTINUE
+
 mount ${ROOT_DEV} /mnt
-
-read -p "Location(example: HK/JP/SG/SG): " LOC
-read -p "Enable DHCP?(1/NULL): " IS_DHCP
-read -p "Is Hyper-V?(1/NULL): " IS_HYPERV
-
 if [[ $IS_UEFI == "1" ]]; then
-    EFI_DEV=$(get_mount_fs /boot/efi)
     mkdir -p "/mnt/efi"
     mount $EFI_DEV "/mnt/efi"
 fi
@@ -108,14 +114,6 @@ fi
 cp /etc/fstab /mnt/etc/fstab # genfstab -U /mnt >> /mnt/etc/fstab
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 
-IPV4_INTERFACE=$(get_ipv4_default_if)
-IPV6_INTERFACE=$(get_ipv6_default_if)
-IPV4_INTERFACE_MAC=$(get_if_mac ${IPV4_INTERFACE})
-IPV6_INTERFACE_MAC=$(get_if_mac ${IPV6_INTERFACE})
-IPV4_ADDRESS=$(get_default_ipv4)
-IPV4_GATEWAY=$(get_default_ipv4_gateway)
-IPV6_ADDRESS=$(get_default_ipv6)
-IPV6_GATEWAY=$(get_default_ipv6_gateway)
 if [[ "${IPV4_INTERFACE}" == "${IPV6_INTERFACE}" ]]; then
     cat <<EOF >/mnt/etc/systemd/network/00-wan0.link
 [Match]

@@ -5,6 +5,21 @@ get_mount_fs() {
     df ${root} | sed '1d' | awk '{print $1}'
 }
 
+is_uefi() {
+    if [ -d "/sys/firmware/efi" ]; then
+        echo "1"
+    fi
+}
+
+get_loc() {
+    local loc
+    loc=$(curl -Ls "ipinfo.io" | jq -r '.country')
+    if [[ -z $loc ]]; then
+        loc=$(curl -Ls "6.ipinfo.io" | jq -r '.country')
+    fi
+    echo "$loc"
+}
+
 LOC=$(get_loc)
 echo "LOC: ${LOC}"
 

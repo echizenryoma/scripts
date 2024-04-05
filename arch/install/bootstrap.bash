@@ -5,28 +5,19 @@ get_mount_fs() {
     df ${root} | sed '1d' | awk '{print $1}'
 }
 
-get_loc() {
-    local loc
-    loc=$(curl -Ls "ipinfo.io" | jq -r '.country')
-    if [[ -z $loc ]]; then
-        loc=$(curl -Ls "6.ipinfo.io" | jq -r '.country')
-    fi
-    echo "$loc"
-}
-
 LOC=$(get_loc)
 echo "LOC: ${LOC}"
 
 IS_UEFI=$(is_uefi)
 echo "UEFI: ${IS_UEFI}"
 
+read -p "Enable DHCP?(1/NULL): " IS_DHCP
+read -p "Is Hyper-V?(1/NULL): " IS_HYPERV
+
 ROOT_DEV=$(get_mount_fs /)
 if [[ $IS_UEFI == "1" ]]; then
     EFI_DEV=$(get_mount_fs /boot/efi)
 fi
-
-read -p "Enable DHCP?(1/NULL): " IS_DHCP
-read -p "Is Hyper-V?(1/NULL): " IS_HYPERV
 
 mkdir -p /tmp/5c44cf21-1004-4f76-8ee6-aec3f527aa0a
 cat << EOF > /tmp/5c44cf21-1004-4f76-8ee6-aec3f527aa0a/.env
@@ -39,7 +30,8 @@ IS_HYPERV=${IS_HYPERV}
 EOF
 curl -Ls "https://github.com/echizenryoma/scripts/raw/main/arch/install/setup.bash" -o /tmp/5c44cf21-1004-4f76-8ee6-aec3f527aa0a/setup.bash
 
-curl -Ls "http://${ArchMirrorDomain}/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.gz" -O /archlinux-bootstrap-x86_64.tar.gz
+ARCHLINUX_BOOTSTRAP_URL=$(curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | grep "Server" | sed 's|$repo/os/$arch|iso/latest/archlinux-bootstrap-x86_64.tar.gz|g' | awk '{print $3}' | head -n 1)
+curl -L "${ARCHLINUX_BOOTSTRAP_URL}" -O /archlinux-bootstrap-x86_64.tar.gz
 mkdir /install
 cd /install
 tar xzf /archlinux-bootstrap-x86_64.tar.gz --numeric-owner

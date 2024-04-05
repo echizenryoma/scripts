@@ -22,31 +22,31 @@ get_loc() {
 
 
 get_ipv4_default_if() {
-    ip route | awk '/default/ {print $5}' | uniq
+    ip route | awk '/default/ {print $5}' | head -n 1
 }
 
 get_ipv6_default_if() {
-    ip -6 route | awk '/default/ {print $5}' | uniq
+    ip -6 route | awk '/default/ {print $5}' | head -n 1
 }
 
 get_default_ipv4() {
     local interface=$(get_ipv4_default_if)
-    ip -o -4 addr show dev "$interface" | awk '{print $4}'
+    ip -o -4 addr show dev "$interface" | awk '{print $4}' | head -n 1
 }
 
 get_default_ipv6() {
     local interface=$(get_ipv6_default_if)
-    ip -o -6 addr show dev "$interface" | awk '{print $4}'
+    ip -o -6 addr show dev "$interface" | awk '{print $4}' | head -n 1
 }
 
 get_default_ipv4_gateway() {
     local interface=$(get_ipv4_default_if)
-    ip route show dev "$interface" | awk '/default/{print $3}'
+    ip route show dev "$interface" | awk '/default/{print $3}' | head -n 1
 }
 
 get_default_ipv6_gateway() {
     local interface=$(get_ipv6_default_if)
-    ip -6 route show dev "$interface" | awk '/default/{print $3}'
+    ip -6 route show dev "$interface" | awk '/default/{print $3}' | head -n 1
 }
 
 get_if_mac() {

@@ -1,7 +1,38 @@
 #!/bin/bash
 
+gen_systemd_network_config() {
+    local interface="$1"
+    local dhcp="$2"
+    local ipv4_address="$3"
+    local ipv4_gateway="$4"
+    local ipv6_address="$5"
+    local ipv6_gateway="$6"
+
+    local config="[Match]\nName=${interface}\n\n[Network]\n"
+
+    if [[ -n $dhcp ]]; then
+        config+="DHCP=both\nDNS=1.1.1.1\nDNS=8.8.8.8\n\n[DHCP]\nUseDNS=false\n"
+    else
+        if [[ -n $ipv4_address ]]; then
+            config+="Address=${ipv4_address}\nDNS=1.1.1.1\nDNS=8.8.8.8\n"
+        fi
+        if [[ -n $ipv4_gateway ]]; then
+            config+="Gateway=${ipv4_gateway}\n"
+        fi
+
+        if [[ -n $ipv6_address ]]; then
+            config+="Address=${ipv6_address}\nDNS=2606:4700:4700::1111\nIPv6AcceptRA=0\n"
+        fi
+        if [[ -n $ipv6_gateway ]]; then
+            config+="\n[Route]\nGateway=${ipv6_gateway}\nGatewayOnLink=yes\n"
+        fi
+    fi
+    echo -e $config
+}
+
 source /install/.env
 echo "IS_UEFI: ${IS_UEFI}"
+echo "ROOT_DEV: ${ROOT_DEV}"
 echo "EFI_DEV: ${EFI_DEV}"
 echo "LOC: ${LOC}"
 echo "IS_DHCP: ${IS_DHCP}"
@@ -113,8 +144,8 @@ echo 'GRUB_SERIAL_COMMAND="serial --speed=115200"' >>/mnt/etc/default/grub
 echo 'GRUB_EARLY_INITRD_LINUX_STOCK=""' >>/mnt/etc/default/grub
 if [[ $IS_UEFI == "1" ]]; then
     arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=arch
-    arch-chroot grub-mkconfig -o /boot/grub/grub.cfg
-    arch-chroot mkdir -p /efi/EFI/BOOT
+    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+    arch-chroot /mnt mkdir -p /efi/EFI/BOOT
     arch-chroot /mnt cp /efi/EFI/arch/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI
 else
     arch-chroot /mnt grub-install --target=i386-pc ${ROOT_DEV} --force

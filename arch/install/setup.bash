@@ -69,22 +69,10 @@ is_uefi() {
     fi
 }
 
-get_loc() {
-    local loc
-    loc=$(curl -Ls "ipinfo.io" | jq -r '.country')
-    if [[ -z $loc ]]; then
-        loc=$(curl -Ls "6.ipinfo.io" | jq -r '.country')
-    fi
-    echo "$loc"
-}
-
 get_mount_fs() {
     local root=$1
     df ${root} | sed '1d' | awk '{print $1}'
 }
-
-LOC=$(get_loc)
-echo "LOC: ${LOC}"
 
 IS_UEFI=$(is_uefi)
 echo "UEFI: ${IS_UEFI}"
@@ -92,6 +80,7 @@ echo "UEFI: ${IS_UEFI}"
 ROOT_DEV=$(get_mount_fs /)
 mount ${ROOT_DEV} /mnt
 
+read -p "Location(example: HK/JP/SG/SG): " LOC
 read -p "Enable DHCP?(1/NULL): " IS_DHCP
 read -p "Is Hyper-V?(1/NULL): " IS_HYPERV
 

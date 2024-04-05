@@ -1,5 +1,21 @@
 #!/bin/bash
 
+check_bin() {
+    local missing_binaries=""
+    for binary in $@; do
+        if ! command -v "$binary" >/dev/null 2>&1; then
+            missing_binaries+=" $binary"
+        fi
+    done
+
+    if [[ -n "$missing_binaries" ]]; then
+        echo "missing: $missing_binaries"
+        return 1
+    else
+        return 0
+    fi
+}
+
 get_mount_fs() {
     local root=$1
     df ${root} | sed '1d' | awk '{print $1}'
@@ -19,7 +35,6 @@ get_loc() {
     fi
     echo "$loc"
 }
-
 
 get_ipv4_default_if() {
     ip route | awk '/default/ {print $5}' | head -n 1
@@ -63,6 +78,11 @@ IPV4_GATEWAY=$(get_default_ipv4_gateway)
 IPV6_ADDRESS=$(get_default_ipv6)
 IPV6_GATEWAY=$(get_default_ipv6_gateway)
 
+check_bin awk head jq curl tar
+if [[ $? -ne 0 ]]; then
+    exit
+fi
+
 LOC=$(get_loc)
 echo "LOC: ${LOC}"
 
@@ -84,7 +104,7 @@ cd /install
 tar xzf /archlinux-bootstrap-x86_64.tar.gz --numeric-owner
 
 mkdir -p /install/root.x86_64/install
-cat << EOF > /install/root.x86_64/install/.env
+cat <<EOF >/install/root.x86_64/install/.env
 IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}
 EFI_DEV=${EFI_DEV}

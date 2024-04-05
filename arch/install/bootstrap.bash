@@ -1,19 +1,7 @@
 #!/bin/bash
 
-check_bin() {
-    local missing_binaries=""
-    for binary in $@; do
-        if ! command -v "$binary" >/dev/null 2>&1; then
-            missing_binaries+=" $binary"
-        fi
-    done
-
-    if [[ -n "$missing_binaries" ]]; then
-        echo "missing: $missing_binaries"
-        return 1
-    else
-        return 0
-    fi
+install_dependencies() {
+    apt update && apt install -y awk head jq curl tar
 }
 
 get_mount_fs() {
@@ -69,11 +57,6 @@ get_if_mac() {
     ip link show "$interface" | awk '/link\/ether/{print $2}'
 }
 
-check_bin awk head jq curl tar
-if [[ $? -ne 0 ]]; then
-    exit
-fi
-
 IPV4_INTERFACE=$(get_ipv4_default_if)
 IPV6_INTERFACE=$(get_ipv6_default_if)
 IPV4_INTERFACE_MAC=$(get_if_mac ${IPV4_INTERFACE})
@@ -91,6 +74,8 @@ echo "UEFI: ${IS_UEFI}"
 
 read -p "Enable DHCP?(1/NULL): " IS_DHCP
 read -p "Is Hyper-V?(1/NULL): " IS_HYPERV
+
+install_dependencies
 
 ROOT_DEV=$(get_mount_fs /)
 if [[ $IS_UEFI == "1" ]]; then

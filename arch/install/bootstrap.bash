@@ -108,7 +108,7 @@ if [[ $IS_UEFI == "1" ]]; then
 fi
 
 ARCHLINUX_BOOTSTRAP_URL=$(curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | grep "Server" | sed 's|$repo/os/$arch|iso/latest/archlinux-bootstrap-x86_64.tar.gz|g' | awk '{print $3}' | head -n 1)
-curl -L "${ARCHLINUX_BOOTSTRAP_URL}" -O /archlinux-bootstrap-x86_64.tar.gz
+curl -L "${ARCHLINUX_BOOTSTRAP_URL}" -o /archlinux-bootstrap-x86_64.tar.gz
 mkdir /install
 cd /install
 tar xzf /archlinux-bootstrap-x86_64.tar.gz --numeric-owner

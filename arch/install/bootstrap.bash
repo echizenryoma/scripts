@@ -22,11 +22,11 @@ get_loc() {
 
 
 get_ipv4_default_if() {
-    ip route | awk '/default/ {print $5}'
+    ip route | awk '/default/ {print $5}' | uniq
 }
 
 get_ipv6_default_if() {
-    ip -6 route | awk '/default/ {print $5}'
+    ip -6 route | awk '/default/ {print $5}' | uniq
 }
 
 get_default_ipv4() {

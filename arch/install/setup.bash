@@ -30,6 +30,7 @@ pacman-key --populate
 sed -i 's|#Color|Color|' /etc/pacman.conf
 sed -i 's|#ParallelDownloads|ParallelDownloads|' /etc/pacman.conf
 cp /mnt/etc/fstab /etc/fstab
+cd /mnt
 rm -rf bin boot etc home opt root sbin srv usr var vml* ini* lib* med* snap* *.tar.gz
 pacstrap /mnt base linux-lts linux-firmware nano openssh grub intel-ucode amd-ucode sudo firewalld
 if [[ $IS_UEFI == "1" ]]; then

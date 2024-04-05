@@ -1,77 +1,5 @@
 #!/bin/bash
 
-get_ipv4_default_if() {
-    ip route | awk '/default/ {print $5}'
-}
-
-get_ipv6_default_if() {
-    ip -6 route | awk '/default/ {print $5}'
-}
-
-get_default_ipv4() {
-    local interface=$(get_ipv4_default_if)
-    ip -o -4 addr show dev "$interface" | awk '{print $4}'
-}
-
-get_default_ipv6() {
-    local interface=$(get_ipv6_default_if)
-    ip -o -6 addr show dev "$interface" | awk '{print $4}'
-}
-
-get_default_ipv4_gateway() {
-    local interface=$(get_ipv4_default_if)
-    ip route show dev "$interface" | awk '/default/{print $3}'
-}
-
-get_default_ipv6_gateway() {
-    local interface=$(get_ipv6_default_if)
-    ip -6 route show dev "$interface" | awk '/default/{print $3}'
-}
-
-get_if_mac() {
-    local interface=$1
-    ip link show "$interface" | awk '/link\/ether/{print $2}'
-}
-
-gen_systemd_network_config() {
-    local interface="$1"
-    local dhcp="$2"
-    local ipv4_address="$3"
-    local ipv4_gateway="$4"
-    local ipv6_address="$5"
-    local ipv6_gateway="$6"
-
-    local config="[Match]\nName=${interface}\n\n[Network]\n"
-
-    if [[ -n $dhcp ]]; then
-        config+="DHCP=both\nDNS=1.1.1.1\nDNS=8.8.8.8\n\n[DHCP]\nUseDNS=false\n"
-    else
-        if [[ -n $ipv4_address ]]; then
-            config+="Address=${ipv4_address}\nDNS=1.1.1.1\nDNS=8.8.8.8\n"
-        fi
-        if [[ -n $ipv4_gateway ]]; then
-            config+="Gateway=${ipv4_gateway}\n"
-        fi
-
-        if [[ -n $ipv6_address ]]; then
-            config+="Address=${ipv6_address}\nDNS=2606:4700:4700::1111\nIPv6AcceptRA=0\n"
-        fi
-        if [[ -n $ipv6_gateway ]]; then
-            config+="\n[Route]\nGateway=${ipv6_gateway}\nGatewayOnLink=yes\n"
-        fi
-    fi
-    echo -e $config
-}
-
-IPV4_INTERFACE=$(get_ipv4_default_if)
-IPV6_INTERFACE=$(get_ipv6_default_if)
-IPV4_INTERFACE_MAC=$(get_if_mac ${IPV4_INTERFACE})
-IPV6_INTERFACE_MAC=$(get_if_mac ${IPV6_INTERFACE})
-IPV4_ADDRESS=$(get_default_ipv4)
-IPV4_GATEWAY=$(get_default_ipv4_gateway)
-IPV6_ADDRESS=$(get_default_ipv6)
-IPV6_GATEWAY=$(get_default_ipv6_gateway)
-
 source /install/.env
 echo "IS_UEFI: ${IS_UEFI}"
 echo "EFI_DEV: ${EFI_DEV}"
@@ -81,12 +9,12 @@ echo "IS_HYPERV: ${IS_HYPERV}"
 
 echo "IPV4_INTERFACE: ${IPV4_INTERFACE}"
 echo "IPV6_INTERFACE: ${IPV6_INTERFACE}"
-echo "IPV4_INTERFACE_MAC=${IPV4_INTERFACE_MAC}"
-echo "IPV6_INTERFACE_MAC=${IPV6_INTERFACE_MAC}"
-echo "IPV4_ADDRESS=${IPV4_ADDRESS}"
-echo "IPV4_GATEWAY=${IPV4_GATEWAY}"
-echo "IPV6_ADDRESS=${IPV6_ADDRESS}"
-echo "IPV6_GATEWAY=${IPV6_GATEWAY}"
+echo "IPV4_INTERFACE_MAC: ${IPV4_INTERFACE_MAC}"
+echo "IPV6_INTERFACE_MAC: ${IPV6_INTERFACE_MAC}"
+echo "IPV4_ADDRESS: ${IPV4_ADDRESS}"
+echo "IPV4_GATEWAY: ${IPV4_GATEWAY}"
+echo "IPV6_ADDRESS: ${IPV6_ADDRESS}"
+echo "IPV6_GATEWAY: ${IPV6_GATEWAY}"
 
 read -p "contine?" IS_CONTINUE
 

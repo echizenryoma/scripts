@@ -69,6 +69,11 @@ get_if_mac() {
     ip link show "$interface" | awk '/link\/ether/{print $2}'
 }
 
+check_bin awk head jq curl tar
+if [[ $? -ne 0 ]]; then
+    exit
+fi
+
 IPV4_INTERFACE=$(get_ipv4_default_if)
 IPV6_INTERFACE=$(get_ipv6_default_if)
 IPV4_INTERFACE_MAC=$(get_if_mac ${IPV4_INTERFACE})
@@ -77,11 +82,6 @@ IPV4_ADDRESS=$(get_default_ipv4)
 IPV4_GATEWAY=$(get_default_ipv4_gateway)
 IPV6_ADDRESS=$(get_default_ipv6)
 IPV6_GATEWAY=$(get_default_ipv6_gateway)
-
-check_bin awk head jq curl tar
-if [[ $? -ne 0 ]]; then
-    exit
-fi
 
 LOC=$(get_loc)
 echo "LOC: ${LOC}"

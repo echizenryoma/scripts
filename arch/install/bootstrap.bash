@@ -57,6 +57,8 @@ get_if_mac() {
     ip link show "$interface" | awk '/link\/ether/{print $2}'
 }
 
+install_dependencies
+
 IPV4_INTERFACE=$(get_ipv4_default_if)
 IPV6_INTERFACE=$(get_ipv6_default_if)
 IPV4_INTERFACE_MAC=$(get_if_mac ${IPV4_INTERFACE})
@@ -74,8 +76,6 @@ echo "UEFI: ${IS_UEFI}"
 
 read -p "Enable DHCP?(1/NULL): " IS_DHCP
 read -p "Is Hyper-V?(1/NULL): " IS_HYPERV
-
-install_dependencies
 
 ROOT_DEV=$(get_mount_fs /)
 if [[ $IS_UEFI == "1" ]]; then

@@ -30,6 +30,16 @@ gen_systemd_network_config() {
     echo -e $config
 }
 
+get_disk() {
+    partition="$1"
+    if [[ $partition == nvme* ]]; then
+      disk=$(echo $partition | sed 's/p[0-9]*$//')
+    else
+      disk=$(echo $partition | sed 's/[0-9]*$//')
+    fi
+    echo $disk
+}
+
 source /install/.env
 echo "IS_UEFI: ${IS_UEFI}"
 echo "ROOT_DEV: ${ROOT_DEV}"
@@ -150,7 +160,8 @@ if [[ $IS_UEFI == "1" ]]; then
     arch-chroot /mnt mkdir -p /efi/EFI/BOOT
     arch-chroot /mnt cp /efi/EFI/arch/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI
 else
-    arch-chroot /mnt grub-install --target=i386-pc ${ROOT_DEV} --force
+    ROOT_DISK=$(get_disk ${ROOT_DEV})
+    arch-chroot /mnt grub-install --target=i386-pc ${ROOT_DISK} --force
     arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 fi
 

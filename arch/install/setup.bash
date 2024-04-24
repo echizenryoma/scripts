@@ -86,7 +86,7 @@ umount /etc/resolv.conf
 sed -i 's|/boot/efi|/efi|' /mnt/etc/fstab
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
 
-if [[ "${IPV4_INTERFACE}" == "${IPV6_INTERFACE}" ]]; then
+if [[ "${IPV4_INTERFACE}" == "${IPV6_INTERFACE}" || -z "${IPV6_INTERFACE}" ]]; then
     cat <<EOF >/mnt/etc/systemd/network/00-wan0.link
 [Match]
 MACAddress=${IPV4_INTERFACE_MAC}

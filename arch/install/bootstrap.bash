@@ -96,6 +96,10 @@ ROOT_DEV=$(get_mount_fs /)
 if [[ $IS_UEFI == "Y" ]]; then
     EFI_DEV=$(get_mount_fs /boot/efi)
 fi
+BOOT_DEV=$(get_mount_fs /boot)
+if [[ "${BOOT_DEV}" == "${ROOT_DEV}" ]]; then
+    BOOT_DEV=""
+fi
 
 ARCHLINUX_BOOTSTRAP_URL=$(curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | grep "Server" | sed 's|$repo/os/$arch|iso/latest/archlinux-bootstrap-x86_64.tar.gz|g' | awk '{print $3}' | head -n 1)
 curl -L "${ARCHLINUX_BOOTSTRAP_URL}" -o /archlinux-bootstrap-x86_64.tar.gz
@@ -108,6 +112,7 @@ cat <<EOF >/install/root.x86_64/install/.env
 IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}
 EFI_DEV=${EFI_DEV}
+BOOT_DEV=${BOOT_DEV}
 LOC=${LOC}
 IS_DHCP=${IS_DHCP}
 IS_HYPERV=${IS_HYPERV}

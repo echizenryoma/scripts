@@ -55,6 +55,7 @@ source /install/.env
 echo "IS_UEFI: ${IS_UEFI}"
 echo "ROOT_DEV: ${ROOT_DEV}"
 echo "EFI_DEV: ${EFI_DEV}"
+echo "BOOT_DEV: ${BOOT_DEV}"
 echo "LOC: ${LOC}"
 echo "IS_DHCP: ${IS_DHCP}"
 echo "IS_HYPERV: ${IS_HYPERV}"
@@ -76,9 +77,14 @@ if [[ "${IS_CONTINUE}" != "Y" ]]; then
 fi
 
 mount ${ROOT_DEV} /mnt
-if [[ $IS_UEFI == "Y" ]]; then
+if [[ ${IS_UEFI} == "Y" ]]; then
     mkdir -p "/mnt/efi"
     mount $EFI_DEV "/mnt/efi"
+fi
+
+if [[ -n "${BOOT_DEV}" ]]; then
+    mkdir -p "/mnt/boot"
+    mount ${BOOT_DEV} "/mnt/boot"
 fi
 
 curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | sed 's|#Server|Server|g' >/etc/pacman.d/mirrorlist
@@ -176,9 +182,13 @@ if [[ $IS_UEFI == "Y" ]]; then
     arch-chroot /mnt cp /efi/EFI/arch/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI
 else
     ROOT_DISK=$(get_disk ${ROOT_DEV})
-    arch-chroot /mnt grub-install --target=i386-pc ${ROOT_DISK} --force
+    if [[ -n "${BOOT_DEV}" ]]; then
+        arch-chroot /mnt grub-install --target=i386-pc --boot-directory=${BOOT_DEV} ${ROOT_DISK} --force
+    else
+        arch-chroot /mnt grub-install --target=i386-pc ${ROOT_DISK} --force
+    fi
     arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 fi
 
-echo -e "Set root Password:\n"
+echo "Set root Password:"
 arch-chroot /mnt passwd

@@ -11,7 +11,9 @@ get_mount_fs() {
 
 is_uefi() {
     if [ -d "/sys/firmware/efi" ]; then
-        echo "1"
+        echo "Y"
+    else
+        echo "N"
     fi
 }
 
@@ -57,6 +59,17 @@ get_if_mac() {
     ip link show "$interface" | awk '/link\/ether/{print $2}'
 }
 
+read_yes_or_no() {
+    local input=""
+    read input
+    input="${input:0:1}"
+    input=$(echo "$input" | tr '[:lower:]' '[:upper:]')
+    if [[ "$input" != "Y" ]]; then
+        input="N"
+    fi
+    echo $input
+}
+
 install_dependencies
 
 IPV4_INTERFACE=$(get_ipv4_default_if)
@@ -74,11 +87,13 @@ echo "LOC: ${LOC}"
 IS_UEFI=$(is_uefi)
 echo "UEFI: ${IS_UEFI}"
 
-read -p "Enable DHCP?(1/NULL): " IS_DHCP
-read -p "Is Hyper-V?(1/NULL): " IS_HYPERV
+echo -n "Enable DHCP?(Y/[N]): "
+IS_DHCP=$(read_yes_or_no)
+echo -n "Is Hyper-V?(Y/[N]): "
+IS_HYPERV=$(read_yes_or_no)
 
 ROOT_DEV=$(get_mount_fs /)
-if [[ $IS_UEFI == "1" ]]; then
+if [[ $IS_UEFI == "Y" ]]; then
     EFI_DEV=$(get_mount_fs /boot/efi)
 fi
 

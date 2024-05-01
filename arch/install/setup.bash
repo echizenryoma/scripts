@@ -10,7 +10,7 @@ gen_systemd_network_config() {
 
     local config="[Match]\nName=${interface}\n\n[Network]\n"
 
-    if [[ -n $dhcp ]]; then
+    if [[ "$dhcp" == "Y" ]]; then
         config+="DHCP=both\nDNS=1.1.1.1\nDNS=8.8.8.8\n\n[DHCP]\nUseDNS=false\n"
     else
         if [[ -n $ipv4_address ]]; then
@@ -40,6 +40,17 @@ get_disk() {
     echo $disk
 }
 
+read_yes_or_no() {
+    local input=""
+    read input
+    input="${input:0:1}"
+    input=$(echo "$input" | tr '[:lower:]' '[:upper:]')
+    if [[ "$input" != "Y" ]]; then
+        input="N"
+    fi
+    echo $input
+}
+
 source /install/.env
 echo "IS_UEFI: ${IS_UEFI}"
 echo "ROOT_DEV: ${ROOT_DEV}"
@@ -57,10 +68,15 @@ echo "IPV4_GATEWAY: ${IPV4_GATEWAY}"
 echo "IPV6_ADDRESS: ${IPV6_ADDRESS}"
 echo "IPV6_GATEWAY: ${IPV6_GATEWAY}"
 
-read -p "contine?" IS_CONTINUE
+echo -n "contine?(Y/[N])"
+IS_CONTINUE=$(read_yes_or_no)
+if [[ "${IS_CONTINUE}" != "Y" ]]; then
+    echo "exit"
+    exit 0
+fi
 
 mount ${ROOT_DEV} /mnt
-if [[ $IS_UEFI == "1" ]]; then
+if [[ $IS_UEFI == "Y" ]]; then
     mkdir -p "/mnt/efi"
     mount $EFI_DEV "/mnt/efi"
 fi
@@ -74,10 +90,10 @@ cp /mnt/etc/fstab /etc/fstab
 cd /mnt
 rm -rf bin boot etc home opt root sbin srv usr var vml* ini* lib* med* snap* *.tar.gz
 pacstrap /mnt base linux-lts linux-firmware nano openssh grub intel-ucode amd-ucode sudo firewalld xfsprogs
-if [[ $IS_UEFI == "1" ]]; then
+if [[ $IS_UEFI == "Y" ]]; then
     pacstrap /mnt efibootmgr
 fi
-if [[ $IS_HYPERV == "1" ]]; then
+if [[ $IS_HYPERV == "Y" ]]; then
     pacstrap /mnt hyperv
 fi
 
@@ -114,7 +130,6 @@ Name=wan1
 EOF
     gen_systemd_network_config "wan1" "${IS_DHCP}" "" "" "${IPV6_ADDRESS}" "${IPV6_GATEWAY}" >/mnt/etc/systemd/network/01-wan1.network
 fi
-arch-chroot /mnt chown :systemd-network /etc/systemd/network/*
 arch-chroot /mnt systemctl enable systemd-networkd
 arch-chroot /mnt systemctl enable systemd-resolved
 
@@ -140,7 +155,7 @@ net.core.default_qdisc=cake
 net.ipv4.tcp_congestion_control=bbr
 EOF
 
-if [[ $IS_HYPERV == "1" ]]; then
+if [[ $IS_HYPERV == "Y" ]]; then
     sed -i "s|^MODULES=(.*)|MODULES=(hv_storvsc hv_vmbus)|g" /mnt/etc/mkinitcpio.conf
 fi
 sed -i "s|PRESETS=(.*)|PRESETS=('default')|g" /mnt/etc/mkinitcpio.d/linux-lts.preset
@@ -154,7 +169,7 @@ rm /mnt/boot/initramfs-linux-lts-fallback.img
 sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 console=tty0 console=ttyS0,115200 earlyprintk=ttyS0,115200 consoleblank=0"|g' /mnt/etc/default/grub
 echo 'GRUB_SERIAL_COMMAND="serial --speed=115200"' >>/mnt/etc/default/grub
 echo 'GRUB_EARLY_INITRD_LINUX_STOCK=""' >>/mnt/etc/default/grub
-if [[ $IS_UEFI == "1" ]]; then
+if [[ $IS_UEFI == "Y" ]]; then
     arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=arch
     arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
     arch-chroot /mnt mkdir -p /efi/EFI/BOOT

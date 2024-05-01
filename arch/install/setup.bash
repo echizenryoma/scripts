@@ -183,7 +183,7 @@ if [[ $IS_UEFI == "Y" ]]; then
 else
     ROOT_DISK=$(get_disk ${ROOT_DEV})
     if [[ -n "${BOOT_DEV}" ]]; then
-        arch-chroot /mnt grub-install --target=i386-pc --boot-directory=${BOOT_DEV} ${ROOT_DISK} --force
+        arch-chroot /mnt grub-install --target=i386-pc --boot-directory=/boot ${ROOT_DISK} --force
     else
         arch-chroot /mnt grub-install --target=i386-pc ${ROOT_DISK} --force
     fi

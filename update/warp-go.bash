@@ -19,7 +19,8 @@ function get_x86_level() {
     if [[ arch != "amd64" ]]; then
         return
     fi
-    local level=$(curl -Lsf https://raw.githubusercontent.com/HenrikBengtsson/x86-64-level/main/x86-64-level | bash 2>/dev/null)
+    local level
+    level=$(curl -Lsf https://raw.githubusercontent.com/HenrikBengtsson/x86-64-level/main/x86-64-level | bash 2>/dev/null)
     if [[ -n "$level" ]]; then
         echo "v$level"
     fi

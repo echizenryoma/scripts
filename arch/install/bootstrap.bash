@@ -101,7 +101,7 @@ if [[ "${BOOT_DEV}" == "${ROOT_DEV}" ]]; then
     BOOT_DEV=""
 fi
 
-ARCHLINUX_BOOTSTRAP_URL=$(curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | grep "Server" | sed 's|$repo/os/$arch|iso/latest/archlinux-bootstrap-x86_64.tar|g' | awk '{print $3}' | shuf -n 1)
+ARCHLINUX_BOOTSTRAP_URL=$(curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | grep "Server" | sed 's|$repo/os/$arch|iso/latest/archlinux-bootstrap-x86_64.tar.zst|g' | awk '{print $3}' | shuf -n 1)
 curl -L "${ARCHLINUX_BOOTSTRAP_URL}" -o /archlinux-bootstrap-x86_64.tar.zst
 mkdir /install
 cd /install

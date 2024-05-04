@@ -128,3 +128,4 @@ EOF
 curl -Ls "https://github.com/echizenryoma/scripts/raw/main/arch/install/setup.bash" -o /install/root.x86_64/install/setup.bash
 chmod +x /install/root.x86_64/install/setup.bash
 /install/root.x86_64/bin/arch-chroot /install/root.x86_64/ /install/setup.bash
+rm -rf /install

@@ -19,9 +19,9 @@ is_uefi() {
 
 get_loc() {
     local loc
-    loc=$(curl -Ls "ipinfo.io" | jq -r '.country')
+    loc=$(curl -Ls "6.ipinfo.io" | jq -r '.country')
     if [[ -z $loc ]]; then
-        loc=$(curl -Ls "6.ipinfo.io" | jq -r '.country')
+        loc=$(curl -Ls "ipinfo.io" | jq -r '.country')
     fi
     echo "$loc"
 }

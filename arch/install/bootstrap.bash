@@ -87,6 +87,11 @@ echo "LOC: ${LOC}"
 IS_UEFI=$(is_uefi)
 echo "UEFI: ${IS_UEFI}"
 
+read -p "SSH_KEY_PATH([/root/.ssh/authorized_keys]):" SSH_KEY_PATH
+if [[ -z "SSH_KEY_PATH" ]]; then
+    SSH_KEY_PATH=/root/.ssh/authorized_keys
+fi
+
 echo -n "Enable DHCP?(Y/[N]): "
 IS_DHCP=$(read_yes_or_no)
 echo -n "Is Hyper-V?(Y/[N]): "
@@ -108,6 +113,14 @@ cd /install
 tar xf /archlinux-bootstrap-x86_64.tar.zst --numeric-owner
 
 mkdir -p /install/root.x86_64/install
+if [ -s "$SSH_KEY_PATH" ]; then
+    cp -f "$SSH_KEY_PATH" /install/root.x86_64/install/authorized_keys
+else
+    cat <<'EOF' >/install/root.x86_64/install/authorized_keys
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPKCeTcrJP5NxGBrKYaMB9hge3iWOEKRPFYsE3NNkmF/ echizenryoma
+EOF
+fi
+
 cat <<EOF >/install/root.x86_64/install/.env
 IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}

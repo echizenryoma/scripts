@@ -52,6 +52,8 @@ read_yes_or_no() {
 }
 
 source /install/.env
+echo "SSH_KEY: $(cat /install/authorized_keys)"
+
 echo "IS_UEFI: ${IS_UEFI}"
 echo "ROOT_DEV: ${ROOT_DEV}"
 echo "EFI_DEV: ${EFI_DEV}"
@@ -145,9 +147,7 @@ PermitRootLogin prohibit-password
 EOF
 
 mkdir -p /mnt/root/.ssh
-cat <<'EOF' >/mnt/root/.ssh/authorized_keys
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPKCeTcrJP5NxGBrKYaMB9hge3iWOEKRPFYsE3NNkmF/ echizenryoma
-EOF
+cp -f /install/authorized_keys /mnt/root/.ssh/authorized_keys
 chmod 755 /mnt/root/.ssh
 chmod 644 /mnt/root/.ssh/authorized_keys
 

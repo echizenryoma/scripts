@@ -20,9 +20,10 @@ is_uefi() {
 
 get_loc() {
     local loc
-    loc=$(curl -Ls "6.ipinfo.io" | jq -r '.country')
+    if [ -d "/sys/firmware/efi" ]; then
+    loc=$(curl --connect-timeout 3 -Ls "6.ipinfo.io"  | jq -r '.country')
     if [[ -z $loc ]]; then
-        loc=$(curl -Ls "ipinfo.io" | jq -r '.country')
+        loc=$(curl --connect-timeout 3 -Ls "ipinfo.io" | jq -r '.country')
     fi
     echo "$loc"
 }

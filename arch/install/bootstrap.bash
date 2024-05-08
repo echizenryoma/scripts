@@ -1,7 +1,8 @@
 #!/bin/bash
 
 install_dependencies() {
-    apt update && apt install -y coreutils gawk jq curl tar
+    apt update
+    apt install -y coreutils gawk jq curl tar zstd
 }
 
 get_mount_fs() {

@@ -47,7 +47,7 @@ MTU=1420
 
 [Peer]
 $(grep PublicKey wgcf-profile.conf)
-Endpoint=${endpoint_ipv6_addr}:2408
+Endpoint=[${endpoint_ipv6_addr}]:2408
 KeepAlive=5
 AllowedIPs=0.0.0.0/0
 EOF

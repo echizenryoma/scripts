@@ -3,12 +3,12 @@
 gen_warp_ipv6() {
     sed -i 's|^#precedence\s\+::ffff:0:0/96\s\+100|precedence ::ffff:0:0/96  100|' /etc/gai.conf
     mkdir -p /etc/systemd/system/warp-go.service.d/
-    cat > /etc/systemd/system/warp-go.service.d/override.conf << EOF
+    cat >/etc/systemd/system/warp-go.service.d/override.conf <<EOF
 [Service]
 ExecStartPost=/bin/bash -c "/opt/warp-go/ExecStartPost.sh ipv6.google.com &"
 EOF
-    
-cat > /opt/warp-go/warp.conf << EOF
+
+    cat >/opt/warp-go/warp.conf <<EOF
 [Account]
 $(grep device_id wgcf-account.toml | sed 's|device_id|Device|' | tr -d "'")
 $(grep PrivateKey wgcf-profile.conf)
@@ -30,11 +30,11 @@ EOF
 gen_warp_ipv4() {
     local endpoint_ipv6_addr=$(nslookup -type=AAAA engage.cloudflareclient.com | sed '2d' | grep Address | head -n 1 | awk '{print $2}')
     mkdir -p /etc/systemd/system/warp-go.service.d/
-    cat > /etc/systemd/system/warp-go.service.d/override.conf << EOF
+    cat >/etc/systemd/system/warp-go.service.d/override.conf <<EOF
 [Service]
 ExecStartPost=/bin/bash -c "/opt/warp-go/ExecStartPost.sh 1.1.1.1 &"
 EOF
-    cat > /opt/warp-go/warp.conf << EOF
+    cat >/opt/warp-go/warp.conf <<EOF
 [Account]
 $(grep device_id wgcf-account.toml | sed 's|device_id|Device|' | tr -d "'")
 $(grep PrivateKey wgcf-profile.conf)
@@ -64,7 +64,7 @@ wgcf generate
 sed -i 's|\s*=\s*|=|g' wgcf-account.toml
 sed -i 's|\s*=\s*|=|g' wgcf-profile.conf
 
-cat > /opt/warp-go/ExecStartPost.sh << 'EOF'
+cat >/opt/warp-go/ExecStartPost.sh <<'EOF'
 #!/bin/bash
 
 CheckDomain=$1
@@ -86,15 +86,15 @@ chmod +x /opt/warp-go/ExecStartPost.sh
 echo -n "WARP IP version?(4/6)"
 read warp_ip_version
 case "${warp_ip_version}" in
-    "6")
-        gen_warp_ipv6
+"6")
+    gen_warp_ipv6
     ;;
-    "4")
-        gen_warp_ipv4
+"4")
+    gen_warp_ipv4
     ;;
-    *)
-        echo "invalid ip version"
-        exit -1
+*)
+    echo "invalid ip version"
+    exit -1
     ;;
 esac
 systemctl daemon-reload

@@ -189,6 +189,7 @@ else
     fi
     arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 fi
+sync
 
 echo "Set root Password:"
 arch-chroot /mnt passwd

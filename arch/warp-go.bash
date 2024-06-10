@@ -71,14 +71,14 @@ CheckDomain=$1
 echo "CheckDomain: $CheckDomain"
 
 while true; do
-  sleep 30
-  echo "pinging $CheckDomain ..."
-  if ! ping -c 3 $CheckDomain &> /dev/null; then
-    echo "ping -I WARP $CheckDomain failed"
-    systemctl restart warp-go.service
-    exit 0
-  fi
-  echo "ping $CheckDomain OK"
+    sleep 30
+    echo "pinging $CheckDomain ..."
+    if ! ping -c 3 $CheckDomain &> /dev/null; then
+        echo "ping -I WARP $CheckDomain failed"
+        systemctl restart warp-go.service
+        exit 0
+    fi
+    echo "ping $CheckDomain OK"
 done
 EOF
 chmod +x /opt/warp-go/ExecStartPost.sh

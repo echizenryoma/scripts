@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source /etc/environment
+
 pacman -Sy --noconfirm --needed cockpit cockpit-storaged cockpit-pcp cockpit-podman networkmanager
 
 mkdir -p /etc/systemd/system/cockpit.socket.d

@@ -53,7 +53,7 @@ AllowedIPs=0.0.0.0/0
 EOF
 }
 
-pacman -Sy --noconfirm --needed tar gzip curl wireguard-tools wgcf
+pacman -Sy --noconfirm --needed tar gzip curl wireguard-tools wgcf jq
 bash <(curl -Ls https://raw.githubusercontent.com/echizenryoma/scripts/main/update/warp-go.bash)
 
 curl -Ls "https://gitlab.com/ProjectWARP/warp-go/-/raw/master/systemd/warp-go.service" -o /etc/systemd/system/warp-go.service

@@ -59,8 +59,7 @@ cat <<EOF >/etc/systemd/system/update-ssl@.service
 Description=Update Certificates for %i
 
 [Service]
-Type=simple
-TimeoutStartSec=600
+Type=oneshot
 RemainAfterExit=no
 ExecStart=/var/ssl/update %i
 EOF

@@ -16,12 +16,11 @@ gen_systemd_network_config() {
         if [[ -n $ipv4_address ]]; then
             config+="Address=${ipv4_address}\nDNS=1.1.1.1\nDNS=8.8.8.8\n"
         fi
-        if [[ -n $ipv4_gateway ]]; then
-            config+="Gateway=${ipv4_gateway}\n"
-        fi
-
         if [[ -n $ipv6_address ]]; then
             config+="Address=${ipv6_address}\nDNS=2606:4700:4700::1111\nIPv6AcceptRA=0\n"
+        fi
+        if [[ -n $ipv4_gateway ]]; then
+            config+="\n[Route]\nGateway=${ipv4_gateway}\nGatewayOnLink=yes\n"
         fi
         if [[ -n $ipv6_gateway ]]; then
             config+="\n[Route]\nGateway=${ipv6_gateway}\nGatewayOnLink=yes\n"

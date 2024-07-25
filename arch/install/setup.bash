@@ -96,7 +96,7 @@ sed -i 's|#ParallelDownloads|ParallelDownloads|' /etc/pacman.conf
 cp /mnt/etc/fstab /etc/fstab
 cd /mnt
 rm -rf bin boot etc home opt root sbin srv usr var vml* ini* lib* med* snap* *.tar.gz
-pacstrap /mnt base linux-lts linux-firmware nano openssh grub intel-ucode amd-ucode sudo firewalld xfsprogs
+pacstrap /mnt base linux-lts nano openssh grub intel-ucode amd-ucode sudo firewalld xfsprogs
 if [[ $IS_UEFI == "Y" ]]; then
     pacstrap /mnt efibootmgr
 fi

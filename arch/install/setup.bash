@@ -32,9 +32,9 @@ gen_systemd_network_config() {
 get_disk() {
     local partition="$1"
     if [[ $partition == nvme* ]]; then
-      disk=$(echo $partition | sed 's/p[0-9]*$//')
+        disk=$(echo $partition | sed 's/p[0-9]*$//')
     else
-      disk=$(echo $partition | sed 's/[0-9]*$//')
+        disk=$(echo $partition | sed 's/[0-9]*$//')
     fi
     echo $disk
 }

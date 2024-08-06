@@ -57,7 +57,6 @@ echo "IS_UEFI: ${IS_UEFI}"
 echo "ROOT_DEV: ${ROOT_DEV}"
 echo "EFI_DEV: ${EFI_DEV}"
 echo "BOOT_DEV: ${BOOT_DEV}"
-echo "LOC: ${LOC}"
 echo "IS_DHCP: ${IS_DHCP}"
 echo "IS_HYPERV: ${IS_HYPERV}"
 
@@ -88,7 +87,7 @@ if [[ -n "${BOOT_DEV}" ]]; then
     mount ${BOOT_DEV} "/mnt/boot"
 fi
 
-curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | sed 's|#Server|Server|g' >/etc/pacman.d/mirrorlist
+echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch'>/etc/pacman.d/mirrorlist
 pacman-key --init
 pacman-key --populate
 sed -i 's|#Color|Color|' /etc/pacman.conf

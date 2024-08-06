@@ -2,7 +2,7 @@
 
 install_dependencies() {
     apt update
-    apt install -y coreutils gawk jq curl tar zstd
+    apt install -y coreutils gawk curl tar zstd
 }
 
 get_mount_fs() {
@@ -16,12 +16,6 @@ is_uefi() {
     else
         echo "N"
     fi
-}
-
-get_loc() {
-    local loc
-    loc=$(curl --connect-timeout 3 -Ls "myip.rdbg.net/json" | jq -r '.country')
-    echo "$loc"
 }
 
 get_ipv4_default_if() {
@@ -79,9 +73,6 @@ IPV4_GATEWAY=$(get_default_ipv4_gateway)
 IPV6_ADDRESS=$(get_default_ipv6)
 IPV6_GATEWAY=$(get_default_ipv6_gateway)
 
-LOC=$(get_loc)
-echo "LOC: ${LOC}"
-
 IS_UEFI=$(is_uefi)
 echo "UEFI: ${IS_UEFI}"
 
@@ -104,7 +95,7 @@ if [[ "${BOOT_DEV}" == "${ROOT_DEV}" ]]; then
     BOOT_DEV=""
 fi
 
-ARCHLINUX_BOOTSTRAP_URL=$(curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | grep "Server" | sed 's|$repo/os/$arch|iso/latest/archlinux-bootstrap-x86_64.tar.zst|g' | awk '{print $3}' | shuf -n 1)
+ARCHLINUX_BOOTSTRAP_URL="https://cloudflaremirrors.com/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
 curl -L "${ARCHLINUX_BOOTSTRAP_URL}" -o /archlinux-bootstrap-x86_64.tar.zst
 mkdir /install
 cd /install
@@ -124,7 +115,6 @@ IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}
 EFI_DEV=${EFI_DEV}
 BOOT_DEV=${BOOT_DEV}
-LOC=${LOC}
 IS_DHCP=${IS_DHCP}
 IS_HYPERV=${IS_HYPERV}
 IPV4_INTERFACE=${IPV4_INTERFACE}

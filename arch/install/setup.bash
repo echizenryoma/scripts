@@ -140,7 +140,6 @@ arch-chroot /mnt systemctl enable systemd-networkd
 arch-chroot /mnt systemctl enable systemd-resolved
 
 cat <<'EOF' >/mnt/etc/ssh/sshd_config.d/00-init
-Port 10022
 PasswordAuthentication no
 PermitRootLogin prohibit-password
 EOF
@@ -151,6 +150,7 @@ chmod 755 /mnt/root/.ssh
 chmod 644 /mnt/root/.ssh/authorized_keys
 
 arch-chroot /mnt systemctl enable sshd
+arch-chroot /mnt sed -i "/Port 22$/a\Port 10022" /etc/ssh/sshd_config
 arch-chroot /mnt firewall-offline-cmd --add-port=10022/tcp
 arch-chroot /mnt systemctl enable firewalld
 

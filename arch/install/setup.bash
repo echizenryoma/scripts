@@ -77,14 +77,17 @@ if [[ "${IS_CONTINUE}" != "Y" ]]; then
 fi
 
 mount ${ROOT_DEV} /mnt
+chattr -R -ia /mnt
 if [[ ${IS_UEFI} == "Y" ]]; then
     mkdir -p "/mnt/efi"
     mount $EFI_DEV "/mnt/efi"
+    chattr -R -ia /mnt/efi
 fi
 
 if [[ -n "${BOOT_DEV}" ]]; then
     mkdir -p "/mnt/boot"
     mount ${BOOT_DEV} "/mnt/boot"
+    chattr -R -ia /mnt/boot
 fi
 
 echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch'>/etc/pacman.d/mirrorlist

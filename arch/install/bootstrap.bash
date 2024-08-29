@@ -126,6 +126,6 @@ IPV4_GATEWAY=${IPV4_GATEWAY}
 IPV6_ADDRESS=${IPV6_ADDRESS}
 IPV6_GATEWAY=${IPV6_GATEWAY}
 EOF
-curl -Ls "https://github.com/echizenryoma/scripts/raw/main/arch/install/setup.bash" -o /install/root.x86_64/install/setup.bash
+curl -Ls "https://raw.githubusercontent.com/echizenryoma/scripts/main/arch/install/setup.bash" -o /install/root.x86_64/install/setup.bash
 chmod +x /install/root.x86_64/install/setup.bash
 /install/root.x86_64/bin/arch-chroot /install/root.x86_64/ /install/setup.bash

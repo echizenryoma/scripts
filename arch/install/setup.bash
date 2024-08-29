@@ -90,7 +90,9 @@ if [[ -n "${BOOT_DEV}" ]]; then
     chattr -R -ia /mnt/boot
 fi
 
-echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch'>/etc/pacman.d/mirrorlist
+LOC=$(curl --connect-timeout 3 -Ls "myip.rdbg.net/loc")
+curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | sed 's|#Server|Server|g' >/etc/pacman.d/mirrorlist
+echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch'>>/etc/pacman.d/mirrorlist
 pacman-key --init
 pacman-key --populate
 sed -i 's|#Color|Color|' /etc/pacman.conf

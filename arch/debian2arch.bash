@@ -335,12 +335,12 @@ configure_bootloader() {
 }
 
 write_disk() {
-    sync
+    arch_chroot_exec sync
 }
 
 set_root_password() {
-    echo "Set root Password:"
-    arch-chroot /mnt passwd
+    arch_chroot_exec echo "Set root Password:"
+    arch_chroot_exec passwd
 }
 
 install_dependencies

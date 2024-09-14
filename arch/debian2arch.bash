@@ -134,7 +134,7 @@ bootstrap() {
 }
 
 confirm_setup() {
-    echo "SSH_KEY: $(cat ${BOOSTRAP_ROOT}/${INSTALL_ROOT}/authorized_keys)"
+    echo "SSH_KEY: $(cat ${BOOSTRAP_ROOT}/${INSTALL_ROOT}/root/.ssh/authorized_keys)"
 
     echo "IS_UEFI: ${IS_UEFI}"
     echo "ROOT_DEV: ${ROOT_DEV}"

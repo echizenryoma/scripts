@@ -6,7 +6,7 @@ MOUNT_ROOT="/mnt"
 source /install/.env
 
 arch_chroot_exec() {
-    arch-chroot "${MOUNT_ROOT}" bash -c "$*"
+    arch-chroot "${MOUNT_ROOT}" $*
 }
 
 gen_systemd_network_config() {
@@ -112,12 +112,12 @@ install_arch() {
 }
 
 configure_arch() {
-    cp -f /etc/fstab ${MOUNT_ROOT}/etc/fstab
+    umount /etc/resolv.conf
     cp -Lf /etc/resolv.conf ${MOUNT_ROOT}/etc/resolv.conf
-    cp -f /etc/systemd/network/* ${MOUNT_ROOT}/etc/systemd/network
+
+    cp -f /etc/fstab ${MOUNT_ROOT}/etc/fstab
     sed -i 's|/boot/efi|/efi|' ${MOUNT_ROOT}/etc/fstab
     cp -f /etc/pacman.d/mirrorlist ${MOUNT_ROOT}/etc/pacman.d/mirrorlist
-    cp -f /etc/fstab ${MOUNT_ROOT}/etc/fstab
 
     cat <<EOF >${MOUNT_ROOT}/etc/sysctl.d/70-bbr.conf
 net.core.default_qdisc=cake

@@ -114,10 +114,11 @@ get_configure() {
         BOOT_DEV=""
     fi
 
+    mkdir -p "${BOOSTRAP_ROOT}/root/.ssh"
     if [ -s "$SSH_KEY_PATH" ]; then
-        cp -f "$SSH_KEY_PATH" "${BOOSTRAP_ROOT}/${INSTALL_ROOT}/authorized_keys"
+        cp -f "$SSH_KEY_PATH" "${BOOSTRAP_ROOT}/root/.ssh/authorized_keys"
     else
-        cat <<'EOF' >"${BOOSTRAP_ROOT}/${INSTALL_ROOT}/authorized_keys"
+        cat <<'EOF' >"${BOOSTRAP_ROOT}/root/.ssh/authorized_keys"
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPKCeTcrJP5NxGBrKYaMB9hge3iWOEKRPFYsE3NNkmF/ echizenryoma
 EOF
     fi

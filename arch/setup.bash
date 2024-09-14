@@ -127,13 +127,13 @@ EOF
     arch_chroot_exec systemctl enable systemd-resolved
 
     if [[ $IS_HYPERV == "Y" ]]; then
-        arch_chroot_exec sed -i "s|^MODULES=(.*)|MODULES=(hv_storvsc hv_vmbus)|g" /etc/mkinitcpio.conf
+        sed -i "s|^MODULES=(.*)|MODULES=(hv_storvsc hv_vmbus)|g" ${MOUNT_ROOT}/etc/mkinitcpio.conf
     fi
-    arch_chroot_exec sed -i "s|PRESETS=(.*)|PRESETS=('default')|g" /mnt/etc/mkinitcpio.d/linux-lts.preset
-    arch_chroot_exec sed -i "s|^HOOKS=(.*)|HOOKS=(base systemd autodetect microcode modconf kms keyboard block filesystems fsck)|g" /etc/mkinitcpio.conf
-    arch_chroot_exec sed -i 's|#Color|Color|' /etc/pacman.conf
-    arch_chroot_exec sed -i 's|#ParallelDownloads|ParallelDownloads|' /etc/pacman.conf
-    arch_chroot_exec sed -i 's|# include \"/usr/share/nano/\*\.nanorc\"|include "/usr/share/nano/*.nanorc"|' /etc/nanorc
+    sed -i "s|PRESETS=(.*)|PRESETS=('default')|g" ${MOUNT_ROOT}/etc/mkinitcpio.d/linux-lts.preset
+    sed -i "s|^HOOKS=(.*)|HOOKS=(base systemd autodetect microcode modconf kms keyboard block filesystems fsck)|g" ${MOUNT_ROOT}/etc/mkinitcpio.conf
+    sed -i 's|#Color|Color|' ${MOUNT_ROOT}/etc/pacman.conf
+    sed -i 's|#ParallelDownloads|ParallelDownloads|' ${MOUNT_ROOT}/etc/pacman.conf
+    sed -i 's|# include \"/usr/share/nano/\*\.nanorc\"|include "/usr/share/nano/*.nanorc"|' ${MOUNT_ROOT}/etc/nanorc
     arch_chroot_exec mkinitcpio -P
     arch_chroot_exec rm -f /boot/initramfs-linux-lts-fallback.img
 }
@@ -147,9 +147,9 @@ EOF
     cp -f /root/.ssh/authorized_keys ${MOUNT_ROOT}/root/.ssh/authorized_keys
     chmod 755 ${MOUNT_ROOT}/root/.ssh
     chmod 644 ${MOUNT_ROOT}/root/.ssh/authorized_keys
+    sed -i "/Port 22$/a\Port 10022" ${MOUNT_ROOT}/etc/ssh/sshd_config
 
     arch_chroot_exec systemctl enable sshd
-    arch_chroot_exec sed -i "/Port 22$/a\Port 10022" /etc/ssh/sshd_config
     arch_chroot_exec firewall-offline-cmd --add-port=10022/tcp
     arch_chroot_exec systemctl enable firewalld
 }

@@ -155,9 +155,9 @@ EOF
 }
 
 configure_bootloader() {
-    arch_chroot_exec sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 console=tty0 console=ttyS0,115200 earlyprintk=ttyS0,115200 consoleblank=0"|g' /mnt/etc/default/grub
-    arch_chroot_exec echo 'GRUB_SERIAL_COMMAND="serial --speed=115200"' >>/etc/default/grub
-    arch_chroot_exec echo 'GRUB_EARLY_INITRD_LINUX_STOCK=""' >>/etc/default/grub
+    sed -i 's|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 console=tty0 console=ttyS0,115200 earlyprintk=ttyS0,115200 consoleblank=0"|g' ${MOUNT_ROOT}/etc/default/grub
+    echo 'GRUB_SERIAL_COMMAND="serial --speed=115200"' >>${MOUNT_ROOT}/etc/default/grub
+    echo 'GRUB_EARLY_INITRD_LINUX_STOCK=""' >>${MOUNT_ROOT}/etc/default/grub
     if [[ $IS_UEFI == "Y" ]]; then
         arch_chroot_exec grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=arch
         arch_chroot_exec grub-mkconfig -o /boot/grub/grub.cfg

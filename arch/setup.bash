@@ -175,6 +175,7 @@ set_root_password() {
     arch_chroot_exec passwd
 }
 
+mount_fs
 backup_config
 delete_all
 configure_arch

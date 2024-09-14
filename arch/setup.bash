@@ -109,6 +109,7 @@ install_arch() {
     if [[ $IS_HYPERV == "Y" ]]; then
         pacstrap /mnt hyperv
     fi
+    umount /etc/resolv.conf
 }
 
 configure_arch() {

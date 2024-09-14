@@ -5,7 +5,7 @@ BOOSTRAP_ROOT="${INSTALL_ROOT}/root.x86_64"
 MOUNT_ROOT="/mnt"
 
 bootstrap_chroot_exec() {
-    ${INSTALL_ROOT}/root.x86_64/bin/arch-chroot "${BOOSTRAP_ROOT}" bash -c "$*"
+    ${BOOSTRAP_ROOT}/bin/arch-chroot "${BOOSTRAP_ROOT}" bash -c "$*"
 }
 
 get_mount_fs() {
@@ -115,9 +115,9 @@ get_configure() {
     fi
 
     if [ -s "$SSH_KEY_PATH" ]; then
-        cp -f "$SSH_KEY_PATH" "${INSTALL_ROOT}/authorized_keys"
+        cp -f "$SSH_KEY_PATH" "${BOOSTRAP_ROOT}/${INSTALL_ROOT}/authorized_keys"
     else
-        cat <<'EOF' >"${INSTALL_ROOT}/authorized_keys"
+        cat <<'EOF' >"${BOOSTRAP_ROOT}/${INSTALL_ROOT}/authorized_keys"
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPKCeTcrJP5NxGBrKYaMB9hge3iWOEKRPFYsE3NNkmF/ echizenryoma
 EOF
     fi
@@ -133,7 +133,7 @@ bootstrap() {
 }
 
 confirm_setup() {
-    echo "SSH_KEY: $(cat /install/authorized_keys)"
+    echo "SSH_KEY: $(cat ${BOOSTRAP_ROOT}/${INSTALL_ROOT}/authorized_keys)"
 
     echo "IS_UEFI: ${IS_UEFI}"
     echo "ROOT_DEV: ${ROOT_DEV}"

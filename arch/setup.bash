@@ -6,7 +6,7 @@ MOUNT_ROOT="/mnt"
 source /install/.env
 
 arch_chroot_exec() {
-    ${INSTALL_ROOT}/arch-chroot "${MOUNT_ROOT}" bash -c "$*"
+    arch-chroot "${MOUNT_ROOT}" bash -c "$*"
 }
 
 gen_systemd_network_config() {
@@ -96,22 +96,13 @@ delete_all() {
 }
 
 install_arch() {
-    bootstrap_chroot_exec pacstrap /mnt base linux-lts nano openssh grub intel-ucode amd-ucode sudo firewalld xfsprogs
+    pacstrap /mnt base linux-lts nano openssh grub intel-ucode amd-ucode sudo firewalld xfsprogs
     if [[ $IS_UEFI == "Y" ]]; then
-        bootstrap_chroot_exec pacstrap /mnt efibootmgr
+        pacstrap /mnt efibootmgr
     fi
     if [[ $IS_HYPERV == "Y" ]]; then
-        bootstrap_chroot_exec pacstrap /mnt hyperv
+        pacstrap /mnt hyperv
     fi
-}
-
-configure_bootstrap() {
-    bootstrap_chroot_exec curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | sed 's|#Server|Server|g' >/etc/pacman.d/mirrorlist
-    bootstrap_chroot_exec echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch' >>/etc/pacman.d/mirrorlist
-    bootstrap_chroot_exec pacman-key --init
-    bootstrap_chroot_exec pacman-key --populate
-    bootstrap_chroot_exec sed -i 's|#Color|Color|' /etc/pacman.conf
-    bootstrap_chroot_exec sed -i 's|#ParallelDownloads|ParallelDownloads|' /etc/pacman.conf
 }
 
 configure_arch() {

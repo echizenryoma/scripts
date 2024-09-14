@@ -6,7 +6,7 @@ MOUNT_ROOT="/mnt"
 source /install/.env
 
 arch_chroot_exec() {
-    arch-chroot "${MOUNT_ROOT}" "$*"
+    arch-chroot "${MOUNT_ROOT}" bash -c "$*"
 }
 
 gen_systemd_network_config() {

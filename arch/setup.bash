@@ -178,6 +178,7 @@ set_root_password() {
 mount_fs
 backup_config
 delete_all
+install_arch
 configure_arch
 configure_network
 configure_sshd

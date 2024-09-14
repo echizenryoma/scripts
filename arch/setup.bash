@@ -96,6 +96,12 @@ delete_all() {
 }
 
 install_arch() {
+    curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | sed 's|#Server|Server|g' >/etc/pacman.d/mirrorlist
+    echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch' >>/etc/pacman.d/mirrorlist
+    pacman-key --init
+    pacman-key --populate
+    sed -i 's|#Color|Color|' /etc/pacman.conf
+    sed -i 's|#ParallelDownloads|ParallelDownloads|' /etc/pacman.conf
     pacstrap /mnt base linux-lts nano openssh grub intel-ucode amd-ucode sudo firewalld xfsprogs
     if [[ $IS_UEFI == "Y" ]]; then
         pacstrap /mnt efibootmgr

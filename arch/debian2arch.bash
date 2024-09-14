@@ -164,6 +164,7 @@ confirm_setup() {
 save_configure() {
     mkdir -p "${BOOSTRAP_ROOT}/${INSTALL_ROOT}"
     cat <<EOF >${BOOSTRAP_ROOT}/${INSTALL_ROOT}/.env
+LOC=${LOC}
 IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}
 ROOT_DISK=${ROOT_DISK}

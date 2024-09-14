@@ -136,6 +136,7 @@ bootstrap() {
 confirm_setup() {
     echo "SSH_KEY: $(cat ${BOOSTRAP_ROOT}/root/.ssh/authorized_keys)"
 
+    echo "LOC: ${LOC}"
     echo "IS_UEFI: ${IS_UEFI}"
     echo "ROOT_DEV: ${ROOT_DEV}"
     echo "ROOT_DISK: ${ROOT_DISK}"
@@ -192,8 +193,6 @@ install_arch() {
 install_dependencies
 bootstrap
 get_configure
-configure_bootstrap
-mount_fs
 backup_config
 confirm_setup
 save_configure

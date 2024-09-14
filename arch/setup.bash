@@ -109,11 +109,11 @@ install_arch() {
     if [[ $IS_HYPERV == "Y" ]]; then
         pacstrap /mnt hyperv
     fi
-    umount /etc/resolv.conf
 }
 
 configure_arch() {
     cp -f /etc/fstab ${MOUNT_ROOT}/etc/fstab
+    cp -Lf /etc/resolv.conf ${MOUNT_ROOT}/etc/resolv.conf
     cp -f /etc/systemd/network/* ${MOUNT_ROOT}/etc/systemd/network
     sed -i 's|/boot/efi|/efi|' ${MOUNT_ROOT}/etc/fstab
     cp -f /etc/pacman.d/mirrorlist ${MOUNT_ROOT}/etc/pacman.d/mirrorlist

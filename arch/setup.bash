@@ -178,7 +178,7 @@ write_disk() {
 }
 
 set_root_password() {
-    arch_chroot_exec echo "Set root Password:"
+    echo "Set root Password:"
     arch_chroot_exec passwd
 }
 

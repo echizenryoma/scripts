@@ -136,10 +136,10 @@ configure_sshd() {
 PasswordAuthentication no
 PermitRootLogin prohibit-password
 EOF
-    arch_chroot_exec mkdir -p /root/.ssh
-    arch_chroot_exec cp -f ${INSTALL_ROOT}/authorized_keys /root/.ssh/authorized_keys
-    arch_chroot_exec chmod 755 /root/.ssh
-    arch_chroot_exec chmod 644 /root/.ssh/authorized_keys
+    mkdir -p ${MOUNT_ROOT}/root/.ssh
+    cp -f /root/.ssh/authorized_keys ${MOUNT_ROOT}/root/.ssh/authorized_keys
+    chmod 755 ${MOUNT_ROOT}/root/.ssh
+    chmod 644 ${MOUNT_ROOT}/root/.ssh/authorized_keys
 
     arch_chroot_exec systemctl enable sshd
     arch_chroot_exec sed -i "/Port 22$/a\Port 10022" /etc/ssh/sshd_config

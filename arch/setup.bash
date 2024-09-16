@@ -130,7 +130,7 @@ install_arch() {
     local base_packages="base linux-lts intel-ucode amd-ucode"
     local extra_packages="nano grub openssh sudo firewalld"
     if [[ $ROOT_FS == "xfs" || $ROOT_FS == "xfs" ]]; then
-        extra_packages="$extra_packages xfsprogs"
+        extra_packages="${extra_packages} xfsprogs"
     fi
     pacstrap /mnt ${base_packages} ${extra_packages}
     if [[ $IS_UEFI == "Y" ]]; then

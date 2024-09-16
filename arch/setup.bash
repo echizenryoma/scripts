@@ -107,16 +107,16 @@ delete_all() {
         ! -path "${MOUNT_ROOT}/proc/*" -and \
         ! -path "${MOUNT_ROOT}/sys/*" -and \
         ! -path "${MOUNT_ROOT}/selinux/*" -and \
-        ! -path "${MOUNT_ROOT}${INSTALL_ROOT}/*"
-    \) -exec chattr -i {} + 2>/dev/null || true
+        ! -path "${MOUNT_ROOT}${INSTALL_ROOT}/*" \
+        \) -exec chattr -i {} + 2>/dev/null || true
 
     find ${MOUNT_ROOT} -type f \(
     ! -path "${MOUNT_ROOT}/dev/*" -and \
         ! -path "${MOUNT_ROOT}/proc/*" -and \
         ! -path "${MOUNT_ROOT}/sys/*" -and \
         ! -path "${MOUNT_ROOT}/selinux/*" -and \
-        ! -path "${MOUNT_ROOT}${INSTALL_ROOT}/*"
-    \) -delete 2>/dev/null || true
+        ! -path "${MOUNT_ROOT}${INSTALL_ROOT}/*" \
+        \) -delete 2>/dev/null || true
 }
 
 install_arch() {

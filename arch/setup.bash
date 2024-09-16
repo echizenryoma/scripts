@@ -107,7 +107,7 @@ delete_all() {
         ! -path "${MOUNT_ROOT}/proc/*" -and \
         ! -path "${MOUNT_ROOT}/sys/*" -and \
         ! -path "${MOUNT_ROOT}/selinux/*" -and \
-        ! -path "${MOUNT_ROOT}/${INSTALL_ROOT}/*"
+        ! -path "${MOUNT_ROOT}${INSTALL_ROOT}/*"
     \) -exec chattr -i {} + 2>/dev/null || true
 
     find ${MOUNT_ROOT} -type f \(
@@ -115,7 +115,7 @@ delete_all() {
         ! -path "${MOUNT_ROOT}/proc/*" -and \
         ! -path "${MOUNT_ROOT}/sys/*" -and \
         ! -path "${MOUNT_ROOT}/selinux/*" -and \
-        ! -path "${MOUNT_ROOT}/${INSTALL_ROOT}/*"
+        ! -path "${MOUNT_ROOT}${INSTALL_ROOT}/*"
     \) -delete 2>/dev/null || true
 }
 

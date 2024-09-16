@@ -44,17 +44,14 @@ gen_systemd_network_config() {
 
 mount_fs() {
     mount ${ROOT_DEV} "${MOUNT_ROOT}"
-    chattr -R -ia "${MOUNT_ROOT}" >/dev/null 2>&1
     if [[ ${IS_UEFI} == "Y" ]]; then
         mkdir -p "${MOUNT_ROOT}/efi"
         mount $EFI_DEV "${MOUNT_ROOT}/efi"
-        chattr -R -ia "${MOUNT_ROOT}/efi" >/dev/null 2>&1
     fi
 
     if [[ -n "${BOOT_DEV}" ]]; then
         mkdir -p "${MOUNT_ROOT}/boot"
         mount ${BOOT_DEV} "${MOUNT_ROOT}/boot"
-        chattr -R -ia "${MOUNT_ROOT}/boot" >/dev/null 2>&1
     fi
 }
 
@@ -105,9 +102,9 @@ backup_config() {
 }
 
 delete_all() {
-    pushd "${MOUNT_ROOT}"
-    rm -rf bin boot etc home opt root sbin srv usr var vml* ini* lib* med* snap* *.tar.gz
-    popd
+    find / -type f \( ! -path '/dev/*' -and ! -path '/proc/*' -and ! -path '/sys/*' -and ! -path '/selinux/*' -and ! -path "/${INSTALL_ROOT}/*" \) \
+        -exec chattr -i {} + 2>/dev/null || true
+    find / \( ! -path '/dev/*' -and ! -path '/proc/*' -and ! -path '/sys/*' -and ! -path '/selinux/*' -and ! -path "//${INSTALL_ROOT}/*" \) -delete 2>/dev/null || true
 }
 
 install_arch() {

@@ -132,13 +132,13 @@ install_arch() {
     if [[ $ROOT_FS == "xfs" || $ROOT_FS == "xfs" ]]; then
         extra_packages="${extra_packages} xfsprogs"
     fi
-    pacstrap /mnt ${base_packages} ${extra_packages}
     if [[ $IS_UEFI == "Y" ]]; then
-        pacstrap /mnt efibootmgr
+        extra_packages="${extra_packages} efibootmgr"
     fi
     if [[ $IS_HYPERV == "Y" ]]; then
-        pacstrap /mnt hyperv
+        extra_packages="${extra_packages} hyperv"
     fi
+    pacstrap ${MOUNT_ROOT} ${base_packages} ${extra_packages}
 }
 
 configure_arch() {

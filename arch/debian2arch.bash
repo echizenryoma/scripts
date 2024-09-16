@@ -202,6 +202,10 @@ install_arch() {
     bootstrap_chroot_exec ${INSTALL_ROOT}/setup.bash
 }
 
+cleanup() {
+    rm -rf "${INSTALL_ROOT}"
+}
+
 install_dependencies
 bootstrap
 get_configure
@@ -209,3 +213,4 @@ backup_config
 confirm_setup
 save_configure
 install_arch
+cleanup

@@ -64,6 +64,11 @@ get_disk() {
     echo $disk
 }
 
+get_fs() {
+    local partition="$1"
+    df -T "${partition}" | tail -n 1 | awk '{print $2}'
+}
+
 read_yes_or_no() {
     local input=""
     read input
@@ -106,12 +111,15 @@ get_configure() {
 
     ROOT_DEV=$(get_mount_fs /)
     ROOT_DISK=$(get_disk ${ROOT_DEV})
+    ROOT_FS=$(get_fs ${ROOT_DEV})
     if [[ $IS_UEFI == "Y" ]]; then
         EFI_DEV=$(get_mount_fs /boot/efi)
     fi
     BOOT_DEV=$(get_mount_fs /boot)
     if [[ "${BOOT_DEV}" == "${ROOT_DEV}" ]]; then
         BOOT_DEV=""
+    else
+        BOOT_FS=$(get_fs ${BOOT_DEV})
     fi
 
     mkdir -p "${BOOSTRAP_ROOT}/root/.ssh"
@@ -140,8 +148,10 @@ confirm_setup() {
     echo "IS_UEFI: ${IS_UEFI}"
     echo "ROOT_DEV: ${ROOT_DEV}"
     echo "ROOT_DISK: ${ROOT_DISK}"
+    echo "ROOT_FS: ${ROOT_FS}"
     echo "EFI_DEV: ${EFI_DEV}"
     echo "BOOT_DEV: ${BOOT_DEV}"
+    echo "BOOT_FS: ${BOOT_FS}"
     echo "IS_DHCP: ${IS_DHCP}"
     echo "IS_HYPERV: ${IS_HYPERV}"
 
@@ -169,8 +179,10 @@ LOC=${LOC}
 IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}
 ROOT_DISK=${ROOT_DISK}
+ROOT_FS=${ROOT_FS}
 EFI_DEV=${EFI_DEV}
 BOOT_DEV=${BOOT_DEV}
+BOOT_FS=${BOOT_FS}
 IS_DHCP=${IS_DHCP}
 IS_HYPERV=${IS_HYPERV}
 IPV4_INTERFACE=${IPV4_INTERFACE}

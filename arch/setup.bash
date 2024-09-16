@@ -20,7 +20,11 @@ gen_systemd_network_config() {
     local config="[Match]\nName=${interface}\n\n[Network]\n"
 
     if [[ "$dhcp" == "Y" ]]; then
-        config+="DHCP=both\nDNS=1.1.1.1\nDNS=8.8.8.8\n\n[DHCP]\nUseDNS=false\n"
+        config+="DHCP=both\nDNS=1.1.1.1\nDNS=8.8.8.8\n"
+        if [[ -n $ipv6_address ]]; then
+            config+="DNS=2606:4700:4700::1111\n"
+        fi
+        config+="\n[DHCP]\nUseDNS=false\n"
     else
         if [[ -n $ipv4_address ]]; then
             config+="Address=${ipv4_address}\nDNS=1.1.1.1\nDNS=8.8.8.8\n"
@@ -52,6 +56,17 @@ mount_fs() {
         mount ${BOOT_DEV} "${MOUNT_ROOT}/boot"
         chattr -R -ia "${MOUNT_ROOT}/boot" >/dev/null 2>&1
     fi
+}
+
+umount_fs() {
+    if [[ ${IS_UEFI} == "Y" ]]; then
+        umount $EFI_DEV
+    fi
+
+    if [[ -n "${BOOT_DEV}" ]]; then
+        umount ${BOOT_DEV}
+    fi
+    umount ${ROOT_DEV}
 }
 
 configure_network() {
@@ -102,7 +117,13 @@ install_arch() {
     pacman-key --populate
     sed -i 's|#Color|Color|' /etc/pacman.conf
     sed -i 's|#ParallelDownloads|ParallelDownloads|' /etc/pacman.conf
-    pacstrap /mnt base linux-lts nano openssh grub intel-ucode amd-ucode sudo firewalld xfsprogs
+
+    local base_packages="base linux-lts intel-ucode amd-ucode"
+    local extra_packages="nano grub openssh sudo firewalld"
+    if [[ $ROOT_FS == "xfs" || $ROOT_FS == "xfs" ]]; then
+        extra_packages="$extra_packages xfsprogs"
+    fi
+    pacstrap /mnt ${base_packages} ${extra_packages}
     if [[ $IS_UEFI == "Y" ]]; then
         pacstrap /mnt efibootmgr
     fi
@@ -139,7 +160,8 @@ EOF
 }
 
 configure_sshd() {
-    cat <<'EOF' >${MOUNT_ROOT}/etc/ssh/sshd_config.d/00-init
+    cat <<'EOF' >${MOUNT_ROOT}/etc/ssh/sshd_config.d/00-cloud.conf
+Port 10022
 PasswordAuthentication no
 PermitRootLogin prohibit-password
 EOF
@@ -147,7 +169,6 @@ EOF
     cp -f /root/.ssh/authorized_keys ${MOUNT_ROOT}/root/.ssh/authorized_keys
     chmod 755 ${MOUNT_ROOT}/root/.ssh
     chmod 644 ${MOUNT_ROOT}/root/.ssh/authorized_keys
-    sed -i "/Port 22$/a\Port 10022" ${MOUNT_ROOT}/etc/ssh/sshd_config
 
     arch_chroot_exec systemctl enable sshd
     arch_chroot_exec firewall-offline-cmd --add-port=10022/tcp
@@ -192,3 +213,4 @@ configure_sshd
 configure_bootloader
 write_disk
 set_root_password
+umount_fs

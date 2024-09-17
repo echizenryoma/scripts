@@ -173,8 +173,8 @@ confirm_setup() {
 }
 
 save_configure() {
-    mkdir -p "${BOOSTRAP_ROOT}/${INSTALL_ROOT}"
-    cat <<EOF >${BOOSTRAP_ROOT}/${INSTALL_ROOT}/.env
+    mkdir -p "${BOOSTRAP_ROOT}${INSTALL_ROOT}"
+    cat <<EOF >${BOOSTRAP_ROOT}${INSTALL_ROOT}/.env
 LOC=${LOC}
 IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}
@@ -197,8 +197,8 @@ EOF
 }
 
 install_arch() {
-    curl -Ls "https://raw.githubusercontent.com/echizenryoma/scripts/main/arch/setup.bash" -o ${BOOSTRAP_ROOT}/${INSTALL_ROOT}/setup.bash
-    chmod +x ${BOOSTRAP_ROOT}/${INSTALL_ROOT}/setup.bash
+    curl -Ls "https://raw.githubusercontent.com/echizenryoma/scripts/main/arch/setup.bash" -o ${BOOSTRAP_ROOT}${INSTALL_ROOT}/setup.bash
+    chmod +x ${BOOSTRAP_ROOT}${INSTALL_ROOT}/setup.bash
     bootstrap_chroot_exec ${INSTALL_ROOT}/setup.bash
 }
 

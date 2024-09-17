@@ -100,7 +100,7 @@ get_configure() {
     echo "UEFI: ${IS_UEFI}"
 
     read -p "SSH_KEY_PATH([/root/.ssh/authorized_keys]):" SSH_KEY_PATH
-    if [[ -z "SSH_KEY_PATH" ]]; then
+    if [[ -z "${SSH_KEY_PATH}" ]]; then
         SSH_KEY_PATH=/root/.ssh/authorized_keys
     fi
 

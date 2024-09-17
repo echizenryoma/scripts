@@ -3,7 +3,7 @@
 INSTALL_ROOT="/install"
 MOUNT_ROOT="/mnt"
 
-source /install/.env
+source "${INSTALL_ROOT}/.env"
 
 arch_chroot_exec() {
     arch-chroot "${MOUNT_ROOT}" $*

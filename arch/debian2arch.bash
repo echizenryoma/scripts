@@ -209,7 +209,6 @@ cleanup() {
 install_dependencies
 bootstrap
 get_configure
-backup_config
 confirm_setup
 save_configure
 install_arch

@@ -108,7 +108,7 @@ delete_all() {
         ! -path "${MOUNT_ROOT}/sys" -and \
         ! -path "${MOUNT_ROOT}/selinux" -and \
         ! -path "${MOUNT_ROOT}${INSTALL_ROOT}" \
-        \) -exec chattr -iR {} + 2>/dev/null || true
+        \) -exec chattr -iRa {} + 2>/dev/null || true
 
     find ${MOUNT_ROOT} -mindepth 1 -maxdepth 1 \( \
         ! -path "${MOUNT_ROOT}/dev" -and \

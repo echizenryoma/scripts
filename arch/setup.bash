@@ -102,7 +102,7 @@ backup_config() {
 }
 
 delete_all() {
-    find ${MOUNT_ROOT} -maxdepth 1 \( \
+    find ${MOUNT_ROOT} -mindepth 1 -maxdepth 1 \( \
         ! -path "${MOUNT_ROOT}/dev" -and \
         ! -path "${MOUNT_ROOT}/proc" -and \
         ! -path "${MOUNT_ROOT}/sys" -and \
@@ -110,7 +110,7 @@ delete_all() {
         ! -path "${MOUNT_ROOT}${INSTALL_ROOT}" \
         \) -exec chattr -iR {} + 2>/dev/null || true
 
-    find ${MOUNT_ROOT} -maxdepth 1 \( \
+    find ${MOUNT_ROOT} -mindepth 1 -maxdepth 1 \( \
         ! -path "${MOUNT_ROOT}/dev" -and \
         ! -path "${MOUNT_ROOT}/proc" -and \
         ! -path "${MOUNT_ROOT}/sys" -and \

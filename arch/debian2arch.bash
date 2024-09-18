@@ -56,7 +56,7 @@ get_if_mac() {
 
 get_disk() {
     local partition="$1"
-    if [[ $partition == nvme* ]]; then
+    if [[ $partition == /dev/nvme* ]]; then
         disk=$(echo $partition | sed 's/p[0-9]*$//')
     else
         disk=$(echo $partition | sed 's/[0-9]*$//')

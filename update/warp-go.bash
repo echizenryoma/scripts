@@ -17,7 +17,7 @@ function check_arch() {
 
 function get_x86_level() {
     local level=$(curl -Lsf https://raw.githubusercontent.com/HenrikBengtsson/x86-64-level/main/x86-64-level | bash 2>/dev/null)
-    if [[ -n "$level" ]]; then
+    if [[ -n "$level" && "$level" != "1" ]]; then
         echo "v$level"
     fi
 }

@@ -67,7 +67,7 @@ umount_fs() {
 }
 
 configure_network() {
-    if [[ "${IPV4_INTERFACE}" == "${IPV6_INTERFACE}" || -z "${IPV6_INTERFACE}" ]]; then
+    if [[ "${IPV4_INTERFACE}" == "${IPV6_INTERFACE}" || -z "${IPV6_INTERFACE}" || -z "${IPV4_INTERFACE}" ]]; then
         cat <<EOF >${MOUNT_ROOT}/etc/systemd/network/00-wan0.link
 [Match]
 MACAddress=${IPV4_INTERFACE_MAC}

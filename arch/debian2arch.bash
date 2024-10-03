@@ -69,6 +69,15 @@ get_fs() {
     df -T "${partition}" | tail -n 1 | awk '{print $2}'
 }
 
+get_cpu_vendor() {
+    local cpu_vendor_id=$(cat /proc/cpuinfo | grep 'vendor_id' | head -n 1 | awk '{print $3}')
+    if [[ ${cpu_vendor_id} == *"Intel"* ]]; then
+        echo "Intel"
+    elif [[ ${cpu_vendor_id} == *"AMD"* ]]; then
+        echo "AMD"
+    fi
+}
+
 read_yes_or_no() {
     local input=""
     read input
@@ -86,6 +95,7 @@ install_dependencies() {
 
 get_configure() {
     LOC=$(curl --connect-timeout 3 -Ls "myip.rdbg.net/loc")
+    CPU_VENDOR=$(get_cpu_vendor)
 
     IPV4_INTERFACE=$(get_ipv4_default_if)
     IPV6_INTERFACE=$(get_ipv6_default_if)
@@ -145,6 +155,7 @@ confirm_setup() {
     echo "SSH_KEY: $(cat ${BOOSTRAP_ROOT}/root/.ssh/authorized_keys)"
 
     echo "LOC: ${LOC}"
+    echo "CPU_VENDOR: ${CPU_VENDOR}"
     echo "IS_UEFI: ${IS_UEFI}"
     echo "ROOT_DEV: ${ROOT_DEV}"
     echo "ROOT_DISK: ${ROOT_DISK}"
@@ -176,6 +187,7 @@ save_configure() {
     mkdir -p "${BOOSTRAP_ROOT}${INSTALL_ROOT}"
     cat <<EOF >${BOOSTRAP_ROOT}${INSTALL_ROOT}/.env
 LOC=${LOC}
+CPU_VENDOR=${CPU_VENDOR}
 IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}
 ROOT_DISK=${ROOT_DISK}

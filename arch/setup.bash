@@ -127,7 +127,12 @@ install_arch() {
     sed -i 's|#Color|Color|' /etc/pacman.conf
     sed -i 's|#ParallelDownloads|ParallelDownloads|' /etc/pacman.conf
 
-    local base_packages="base linux-lts intel-ucode amd-ucode"
+    local base_packages="base linux-lts"
+    if [[ ${CPU_VENDOR} == "Intel" ]]; then
+        base_packages="${base_packages} intel-ucode"
+    elif [[ ${CPU_VENDOR} == "AMD" ]]; then
+        base_packages="${base_packages} amd-ucode"
+    fi
     local extra_packages="nano grub openssh sudo firewalld"
     if [[ $ROOT_FS == "xfs" || $ROOT_FS == "xfs" ]]; then
         extra_packages="${extra_packages} xfsprogs"

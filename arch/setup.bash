@@ -133,7 +133,7 @@ install_arch() {
     elif [[ ${CPU_VENDOR} == "AMD" ]]; then
         base_packages="${base_packages} amd-ucode"
     fi
-    local extra_packages="nano grub openssh sudo firewalld"
+    local extra_packages="nano grub openssh sudo firewalld git"
     if [[ $ROOT_FS == "xfs" || $ROOT_FS == "xfs" ]]; then
         extra_packages="${extra_packages} xfsprogs"
     fi

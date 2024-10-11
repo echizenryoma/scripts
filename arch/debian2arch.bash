@@ -3,6 +3,7 @@
 INSTALL_ROOT="/install"
 BOOSTRAP_ROOT="${INSTALL_ROOT}/root.x86_64"
 MOUNT_ROOT="/mnt"
+ROOT_PASS=""
 
 bootstrap_chroot_exec() {
     ${BOOSTRAP_ROOT}/bin/arch-chroot "${BOOSTRAP_ROOT}" bash -c "$*"
@@ -93,6 +94,24 @@ install_dependencies() {
     apt update && apt install -y coreutils gawk curl tar zstd
 }
 
+set_root_password() {
+    local password1
+    local password2
+
+    read -s -p "Enter password: " password1
+    echo
+
+    read -s -p "Enter password again: " password2
+    echo
+
+    if [[ "$password1" == "$password2" ]]; then
+        ROOT_PASS="$password1"
+    else
+        echo "The passwords you entered twice do not match. Please try again."
+        set_root_password
+    fi
+}
+
 get_configure() {
     LOC=$(curl --connect-timeout 3 -Ls "myip.rdbg.net/loc")
     CPU_VENDOR=$(get_cpu_vendor)
@@ -140,6 +159,7 @@ get_configure() {
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPKCeTcrJP5NxGBrKYaMB9hge3iWOEKRPFYsE3NNkmF/ echizenryoma
 EOF
     fi
+    set_root_password
 }
 
 bootstrap() {
@@ -187,6 +207,7 @@ save_configure() {
     mkdir -p "${BOOSTRAP_ROOT}${INSTALL_ROOT}"
     cat <<EOF >${BOOSTRAP_ROOT}${INSTALL_ROOT}/.env
 LOC=${LOC}
+ROOT_PASS=${ROOT_PASS}
 CPU_VENDOR=${CPU_VENDOR}
 IS_UEFI=${IS_UEFI}
 ROOT_DEV=${ROOT_DEV}

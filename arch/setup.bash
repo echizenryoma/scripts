@@ -213,7 +213,7 @@ write_disk() {
 }
 
 set_root_password() {
-    echo "${ROOT_PASS}" | arch_chroot_exec passwd --stdin echizenryoma
+    echo "${ROOT_PASS}" | arch_chroot_exec passwd --stdin root
 }
 
 mount_fs

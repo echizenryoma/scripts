@@ -230,7 +230,11 @@ EOF
 }
 
 install_arch() {
-    curl -Ls "https://raw.githubusercontent.com/echizenryoma/scripts/main/arch/setup.bash" -o ${BOOSTRAP_ROOT}${INSTALL_ROOT}/setup.bash
+    local url="https://raw.githubusercontent.com/echizenryoma/scripts/main/arch/setup.bash"
+    if [[ "$LOC" == "CN" ]]; then
+        url="https://gitlab.com/ryomadev/scripts/-/raw/main/arch/setup.bash?ref_type=heads&inline=false"
+    fi
+    curl -Ls "$url" -o ${BOOSTRAP_ROOT}${INSTALL_ROOT}/setup.bash
     chmod +x ${BOOSTRAP_ROOT}${INSTALL_ROOT}/setup.bash
     bootstrap_chroot_exec ${INSTALL_ROOT}/setup.bash
 }

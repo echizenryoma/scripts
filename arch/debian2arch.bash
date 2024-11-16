@@ -240,7 +240,13 @@ install_arch() {
 }
 
 cleanup() {
-    rm -rf "${INSTALL_ROOT}"
+    find ${INSTALL_ROOT} -mindepth 1 -maxdepth 1 \( \
+        ! -path "${INSTALL_ROOT}/dev" -and \
+        ! -path "${INSTALL_ROOT}/proc" -and \
+        ! -path "${INSTALL_ROOT}/sys" -and \
+        ! -path "${INSTALL_ROOT}/selinux" -and \
+        ! -path "${INSTALL_ROOT}/mnt" \
+        \) -exec rm -rf {} + 2>/dev/null || true
 }
 
 install_dependencies

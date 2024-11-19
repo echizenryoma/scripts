@@ -164,6 +164,9 @@ EOF
 
 bootstrap() {
     local url="https://cloudflaremirrors.com/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
+    if [[ "$LOC" == "CN" ]]; then
+        url="https://mirrors.ustc.edu.cn/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
+    fi
     curl -L "${url}" -o /archlinux-bootstrap-x86_64.tar.zst
     mkdir -p "${INSTALL_ROOT}"
     pushd "${INSTALL_ROOT}"
@@ -250,9 +253,9 @@ cleanup() {
 }
 
 install_dependencies
-bootstrap
 get_configure
 confirm_setup
+bootstrap
 save_configure
 install_arch
 cleanup

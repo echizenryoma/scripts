@@ -20,17 +20,13 @@ gen_systemd_network_config() {
     local config="[Match]\nName=${interface}\n\n[Network]\n"
 
     if [[ "$dhcp" == "Y" ]]; then
-        config+="DHCP=both\nDNS=1.1.1.1\nDNS=8.8.8.8\n"
-        if [[ -n $ipv6_address ]]; then
-            config+="DNS=2606:4700:4700::1111\n"
-        fi
-        config+="\n[DHCP]\nUseDNS=false\n"
+        config+="DHCP=both\n"
     else
         if [[ -n $ipv4_address ]]; then
-            config+="Address=${ipv4_address}\nDNS=1.1.1.1\nDNS=8.8.8.8\n"
+            config+="Address=${ipv4_address}\n"
         fi
         if [[ -n $ipv6_address ]]; then
-            config+="Address=${ipv6_address}\nDNS=2606:4700:4700::1111\nIPv6AcceptRA=0\n"
+            config+="Address=${ipv6_address}\nIPv6AcceptRA=0\n"
         fi
         if [[ -n $ipv4_gateway ]]; then
             config+="\n[Route]\nGateway=${ipv4_gateway}\nGatewayOnLink=yes\n"

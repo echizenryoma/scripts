@@ -42,6 +42,29 @@ gen_systemd_network_config() {
     echo -e $config
 }
 
+gen_resolv_config() {
+    loc config=""
+    if [[ "$LOC" == "CN" ]]; then
+        if [[ "${HAVE_IPV4}" != "no" ]]; then
+            config+="nameserver 119.29.29.29\n"
+            config+="nameserver 223.6.6.6\n"
+        fi
+        if [[ "${HAVE_IPV6}" == "yes" ]]; then
+            config+="nameserver 2400:3200:baba::1\n"
+        fi
+    else
+        if [[ "${HAVE_IPV4}" != "no" ]]; then
+            config+="nameserver 1.1.1.1\n"
+            config+="nameserver 8.8.8.8\n"
+        fi
+        if [[ "${HAVE_IPV6}" == "yes" ]]; then
+            config+="nameserver 2606:4700:4700::1111\n"
+        fi
+    fi
+    config+="search .\n"
+    echo -e "$config"
+}
+
 mount_fs() {
     mount ${ROOT_DEV} "${MOUNT_ROOT}"
     if [[ ${IS_UEFI} == "Y" ]]; then
@@ -148,7 +171,7 @@ install_arch() {
 
 configure_arch() {
     umount /etc/resolv.conf
-    cp -Lf /etc/resolv.conf ${MOUNT_ROOT}/etc/resolv.conf
+    gen_resolv_config >${MOUNT_ROOT}/etc/resolv.conf
 
     cp -f /etc/fstab ${MOUNT_ROOT}/etc/fstab
     sed -i 's|/boot/efi|/efi|' ${MOUNT_ROOT}/etc/fstab
@@ -159,7 +182,6 @@ net.core.default_qdisc=cake
 net.ipv4.tcp_congestion_control=bbr
 EOF
     arch_chroot_exec systemctl enable systemd-networkd
-    arch_chroot_exec systemctl enable systemd-resolved
 
     if [[ $IS_HYPERV == "Y" ]]; then
         sed -i "s|^MODULES=(.*)|MODULES=(hv_storvsc hv_vmbus)|g" ${MOUNT_ROOT}/etc/mkinitcpio.conf

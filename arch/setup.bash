@@ -41,19 +41,19 @@ gen_systemd_network_config() {
 gen_resolv_config() {
     loc config=""
     if [[ "$LOC" == "CN" ]]; then
-        if [[ "${HAVE_IPV4}" != "no" ]]; then
+        if [[ -n "${IPV4_ADDRESS}" ]]; then
             config+="nameserver 119.29.29.29\n"
             config+="nameserver 223.6.6.6\n"
         fi
-        if [[ "${HAVE_IPV6}" == "yes" ]]; then
+        if [[ -n "${IPV6_ADDRESS}" ]]; then
             config+="nameserver 2400:3200:baba::1\n"
         fi
     else
-        if [[ "${HAVE_IPV4}" != "no" ]]; then
+        if [[ -n "${IPV4_ADDRESS}" ]]; then
             config+="nameserver 1.1.1.1\n"
             config+="nameserver 8.8.8.8\n"
         fi
-        if [[ "${HAVE_IPV6}" == "yes" ]]; then
+        if [[ -n "${IPV6_ADDRESS}" ]]; then
             config+="nameserver 2606:4700:4700::1111\n"
         fi
     fi
@@ -86,7 +86,16 @@ umount_fs() {
 }
 
 configure_network() {
-    if [[ "${IPV4_INTERFACE}" == "${IPV6_INTERFACE}" || -z "${IPV6_INTERFACE}" || -z "${IPV4_INTERFACE}" ]]; then
+    if [[ -z "${IPV4_INTERFACE}"  ]]; then
+        cat <<EOF >${MOUNT_ROOT}/etc/systemd/network/00-wan0.link
+[Match]
+MACAddress=${IPV6_INTERFACE_MAC}
+
+[Link]
+Name=wan0
+EOF
+        gen_systemd_network_config "wan0" "${IS_DHCP}" "" "" "${IPV6_ADDRESS}" "${IPV6_GATEWAY}" >${MOUNT_ROOT}/etc/systemd/network/00-wan0.network
+    elif [[ "${IPV4_INTERFACE}" == "${IPV6_INTERFACE}" || -z "${IPV6_INTERFACE}" ]]; then
         cat <<EOF >${MOUNT_ROOT}/etc/systemd/network/00-wan0.link
 [Match]
 MACAddress=${IPV4_INTERFACE_MAC}

@@ -113,7 +113,7 @@ set_root_password() {
 }
 
 get_configure() {
-    LOC=$(curl --connect-timeout 3 -Ls "myip.rdbg.net/loc")
+    LOC=$(curl --connect-timeout 3 -Ls "https://myip.rdbg.net/loc")
     CPU_VENDOR=$(get_cpu_vendor)
 
     IPV4_INTERFACE=$(get_ipv4_default_if)

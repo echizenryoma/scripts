@@ -70,10 +70,14 @@ cat >/opt/warp-go/ExecStartPost.sh <<'EOF'
 CheckDomain=$1
 echo "CheckDomain: $CheckDomain"
 
+if systemctl is-active --quiet stat_client.service; then
+    systemctl restart stat_client.service
+fi
+
 while true; do
     sleep 30
     echo "pinging $CheckDomain ..."
-    if ! ping -c 3 $CheckDomain &> /dev/null; then
+    if ! ping -c 3 $CheckDomain &>/dev/null; then
         echo "ping -I WARP $CheckDomain failed"
         systemctl restart warp-go.service
         exit 0

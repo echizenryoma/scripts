@@ -169,7 +169,7 @@ EOF
 }
 
 bootstrap() {
-    local url="https://geo.mirror.pkgbuild.com/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
+    local url="https://geo.mirror.pkgbuild.com/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
     if [[ "$LOC" == "CN" ]]; then
         url="https://mirrors.ustc.edu.cn/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
     fi

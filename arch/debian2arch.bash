@@ -169,7 +169,7 @@ EOF
 }
 
 bootstrap() {
-    local url="https://cloudflaremirrors.com/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
+    local url="https://geo.mirror.pkgbuild.com/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
     if [[ "$LOC" == "CN" ]]; then
         url="https://mirrors.ustc.edu.cn/archlinux/iso/latest/archlinux-bootstrap-x86_64.tar.zst"
     fi
@@ -239,10 +239,7 @@ EOF
 }
 
 install_arch() {
-    local url="https://raw.githubusercontent.com/echizenryoma/scripts/main/arch/setup.bash"
-    if [[ "$LOC" == "CN" ]]; then
-        url="https://gitlab.com/ryomadev/scripts/-/raw/main/arch/setup.bash?ref_type=heads&inline=false"
-    fi
+    local url="https://gitlab.com/ryomadev/scripts/-/raw/main/arch/setup.bash?ref_type=heads&inline=false"
     curl -Ls "$url" -o ${BOOSTRAP_ROOT}${INSTALL_ROOT}/setup.bash
     chmod +x ${BOOSTRAP_ROOT}${INSTALL_ROOT}/setup.bash
     bootstrap_chroot_exec ${INSTALL_ROOT}/setup.bash

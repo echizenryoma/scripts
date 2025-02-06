@@ -149,7 +149,8 @@ delete_all() {
 
 install_arch() {
     curl -Ls "https://archlinux.org/mirrorlist/?country=${LOC}&protocol=https&ip_version=4&ip_version=6&use_mirror_status=on" | sed 's|#Server|Server|g' | grep Server | shuf | head -n 5 >/etc/pacman.d/mirrorlist
-    echo 'Server = https://cloudflaremirrors.com/archlinux/$repo/os/$arch' >>/etc/pacman.d/mirrorlist
+    echo 'Server = https://geo.mirror.pkgbuild.com/archlinux/$repo/os/$arch' >>/etc/pacman.d/mirrorlist
+    echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' >>/etc/pacman.d/mirrorlist
     pacman-key --init
     pacman-key --populate
     sed -i 's|#Color|Color|' /etc/pacman.conf
